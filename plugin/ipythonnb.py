@@ -1,5 +1,5 @@
 from pelican import signals
-from pelican.readers import _EXTENSIONS, Reader
+from pelican.readers import EXTENSIONS, Reader
  
 try:
     import json
@@ -52,7 +52,7 @@ class iPythonNB(Reader):
  
  
 def add_reader(arg):
-    _EXTENSIONS['ipynb'] = iPythonNB
+    EXTENSIONS['ipynb'] = iPythonNB
  
  
 def register():
