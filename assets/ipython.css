@@ -262,9 +262,6 @@ b,strong { font-weight: bold; }
  */
 
 
-div.ipynb {
-    overflow: hidden;
-}
 
 span#save_widget {
     padding: 5px;
@@ -703,9 +700,9 @@ pre, code, kbd, samp { white-space: pre-wrap; }
 .rendered_html ol ol ol ol ol {list-style:lower-roman; 0em 2em;}
 */
 
-.rendered_html p {
+/*.rendered_html p {
     margin-top: 1em;
-}
+}*/
 
 .rendered_html hr {
     color: black;

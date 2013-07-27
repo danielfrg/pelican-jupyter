@@ -2,55 +2,42 @@
 
 ## Installation
 
-Download plugin files: `plugin/ipythonnb.py` and the `plugin/nbconverter` directory.
+Download plugin files: `plugin/*` including the `plugin/nbconverter` directory
+and put those files in `pelican_project/plugins/`
 
-The esiest way is to locate the pelican directory (for example: `~/.virtualenvs/blog/lib/python2.7/site-packages/pelican/`) and paste plugins files in the `pelican/plugins` folder. 
-Then in the `pelicanconf.py` put: `PLUGINS = ['pelican.plugins.ipythonnb']`.
-
-But is also is possible to add plugins on the same directory of the pelican project:
-Create a folder called `custom_plugins_dir` (NOTE: the name can be anything but do not use `plugins`) and paste the plugin files there.
-Then in the `pelicanconf.py` put: `PLUGINS = ['custom_plugins_dir.ipythonnb']`.
-
-In both cases also need to modify the MARKUP setting: On the `pelicanconf.py` put: `MARKUP = ('md', 'ipynb')`
+Then in the `pelicanconf.py`:
+```
+PLUGIN_PATH = './plugins'
+PLUGINS = ['ipythonnb', ...]
+MARKUP = ('md', 'ipynb')
+```
 
 ## Add the CSS to the theme
 
-Download the `ipython.css` file from the `assets` directory and place it in your theme static folder. Then include the CSS on the theme template:
+Download the `ipython.css` file from the `assets` directory and place it in your
+theme static folder. Then include the CSS on the theme template:
 
 ```
 {% if article.ipython %}
-    <link rel="stylesheet" href="/theme/css/ipython.min.css">
+    <link rel="stylesheet" href="/theme/css/ipython.css">
 {% endif %}
 ```
 
 ## How to blog
 
-Write the post using the iPython notebook interface, using markdown or anything.
+Write the post using the iPython notebook interface, using markdown, equations, etc.
 
-Then open the `.ipynb` file in a text editor and should see.
+Place the `.ipynb` file in the content folder and create a new file with the
+same name as the ipython notebook with extention `.ipynb-meta`. So you should have:
+`my_post.ipynb` and `my_post.ipynb-meta`
 
+The `ipynb-meta` should have the regular markdown metadata:
 ```
-{
-    "metadata": {
-        "name": "Super iPython NB"
-    },
-{ A_LOT_OF_OTHER_STUFF }
+Title:
+Slug:
+Date:
+Category:
+Tags:
+Author:
+Summary:
 ```
-
-Add the metadata for example:
-
-```
-{
- "metadata": {
-        "name": "Super iPython NB",
-        "Title": "Blogging with iPython notebooks in pelican",
-        "Date": "2013-2-16",
-        "Category": "Category",
-        "Tags": "tag2, tag2",
-        "slug": "slug-slug-slug",
-        "Author": "Me"
-    },
-    { A_LOT_OF_OTHER_STUFF }
-```
-
-And thats it! Add the `.ipynb` file to the `content` folder in the pelican project and should generate a new post.
