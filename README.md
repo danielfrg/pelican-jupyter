@@ -2,14 +2,13 @@
 
 ## Requirements
 
-pelican==3.2.2
-ipython==1.0.0
+Mainly: pelican==3.2.2 and ipython==1.0.0
 
-Used by the IPython.nbconver:
-Sphinx==1.1.3
-[pandoc](http://johnmacfarlane.net/pandoc/)
+Also this libraries are used by the IPython.nbconver:
+Sphinx==1.1.3 and [pandoc](http://johnmacfarlane.net/pandoc/)
 
 I test this under Python 3, Python 2 in theory works but I do not test it.
+
 I recommend using Python 3 because all the libraries already support it.
 
 ## Installation
