@@ -1,15 +1,27 @@
 # Pelican plugin for blogging with iPython Notebooks
 
+## Requirements
+
+pelican==3.2.2
+ipython==1.0.0
+
+Used by the IPython.nbconver:
+Sphinx==1.1.3
+[pandoc](http://johnmacfarlane.net/pandoc/)
+
+I test this under Python 3, Python 2 in theory works but I do not test it.
+I recommend using Python 3 because all the libraries already support it.
+
 ## Installation
 
-Download plugin files: `plugin/*` including the `plugin/nbconverter` directory
-and put those files in `pelican_project/plugins/`
+Put the plugin (`ipythonnb.py`) inside the `pelican_project/plugins/` folder.
 
 Then in the `pelicanconf.py`:
 ```
-PLUGIN_PATH = './plugins'
-PLUGINS = ['ipythonnb', ...]
 MARKUP = ('md', 'ipynb')
+
+PLUGIN_PATH = './plugins'
+PLUGINS = ['ipythonnb', 'other_plugins']
 ```
 
 ## Add the CSS to the theme

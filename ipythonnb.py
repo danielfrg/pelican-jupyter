@@ -4,8 +4,7 @@ from pelican.readers import EXTENSIONS, Reader
 
 try:
     import json
-    import IPython
-    from .nbconverter.html import ConverterHTML
+    from IPython import nbconvert
     import markdown
 except Exception as e:
     IPython = False
@@ -32,32 +31,31 @@ class iPythonNB(Reader):
                 md.convert(content)
                 _metadata = md.Meta
 
-            for key, value in _metadata.iteritems():
+            for key, value in _metadata.items():
                 _metadata[key] = value[0]
         else:
             # Try to load metadata from inside ipython nb
             ipynb_file = open(filepath)
             _metadata = json.load(ipynb_file)['metadata']
-        # Change unicode encoding to utf-8
-        for key, value in _metadata.iteritems():
-            if isinstance(key, unicode):
-                key = key.encode('utf-8')
-            if isinstance(value, unicode):
-                value = value.encode('utf-8')
-            _metadata[key] = value
+        # # Change unicode encoding to utf-8
+        # for key, value in _metadata.items():
+        #     if isinstance(key, unicode):
+        #         key = key.encode('utf-8')
+        #     if isinstance(value, unicode):
+        #         value = value.encode('utf-8')
+        #     _metadata[key] = value
 
         metadata = {}
-        for key, value in _metadata.iteritems():
+        for key, value in _metadata.items():
             key = key.lower()
             metadata[key] = self.process_metadata(key, value)
         metadata['ipython'] = True
 
         # Converting ipython to html
-        converter = ConverterHTML(filepath)
-        converter.read()
-        content = converter.main_body()  # Use the ipynb converter
+        content, css = nbconvert.export_html(filepath)
+        # content = converter.main_body()  # Use the ipynb converter
         # change ipython css classes so it does not mess up the blog css
-        content = '\n'.join(converter.main_body())
+        # content = '\n'.join(converter.main_body())
         # replace the highlight tags
         content = content.replace('class="highlight"', 'class="highlight-ipynb"')
         # specify <pre> tags
