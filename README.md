@@ -4,7 +4,7 @@
 
 Mainly: pelican==3.2.2 and ipython==1.0.0
 
-Also this libraries are used by the IPython.nbconver:
+Also this libraries are used by the IPython.nbconvert:
 Sphinx==1.1.3 and [pandoc](http://johnmacfarlane.net/pandoc/)
 
 I test this under Python 3, Python 2 in theory works but I do not test it.
@@ -21,17 +21,6 @@ MARKUP = ('md', 'ipynb')
 
 PLUGIN_PATH = './plugins'
 PLUGINS = ['ipythonnb', 'other_plugins']
-```
-
-## Add the CSS to the theme
-
-Download the `ipython.css` file from the `assets` directory and place it in your
-theme static folder. Then include the CSS on the theme template:
-
-```
-{% if article.ipython %}
-    <link rel="stylesheet" href="/theme/css/ipython.css">
-{% endif %}
 ```
 
 ## How to blog

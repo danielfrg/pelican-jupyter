@@ -4,11 +4,48 @@ from pelican.readers import EXTENSIONS, Reader
 
 try:
     import json
-    from IPython import nbconvert
     import markdown
+
+    from IPython.config import Config
+    from IPython.nbconvert.exporters import HTMLExporter
+
+    from IPython.nbconvert.filters.highlight import _pygment_highlight
+    from pygments.formatters import HtmlFormatter
 except Exception as e:
     IPython = False
     raise e
+
+
+CUSTOM_CSS = '''
+<style type="text/css">
+div.input_area {
+    border: none;
+    background: none;
+}
+
+pre.ipynb {
+    padding: 3px 9.5px;
+}
+
+@media print{*{text-shadow:none !important;color:#000 !important;background:transparent !important;box-shadow:none !important;} a,a:visited{text-decoration:underline;} a[href]:after{content:" (" attr(href) ")";} abbr[title]:after{content:" (" attr(title) ")";} .ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:"";} pre,blockquote{border:1px solid #999;page-break-inside:avoid;} thead{display:table-header-group;} tr,img{page-break-inside:avoid;} img{max-width:100% !important;} @page {margin:0.5cm;}p,h2,h3{orphans:3;widows:3;} h2,h3{page-break-after:avoid;}}
+
+.cell.border-box-sizing.code_cell.vbox {
+  max-width: 750px;
+  margin: 0 auto;
+}
+
+pre {
+    font-size: 1em;
+}
+
+</style>
+'''
+
+
+def custom_highlighter(source, language='ipython'):
+    formatter = HtmlFormatter(cssclass='highlight-ipynb')
+    output = _pygment_highlight(source, formatter, language)
+    return output.replace('<pre>', '<pre class="ipynb">')
 
 
 class iPythonNB(Reader):
@@ -37,13 +74,6 @@ class iPythonNB(Reader):
             # Try to load metadata from inside ipython nb
             ipynb_file = open(filepath)
             _metadata = json.load(ipynb_file)['metadata']
-        # # Change unicode encoding to utf-8
-        # for key, value in _metadata.items():
-        #     if isinstance(key, unicode):
-        #         key = key.encode('utf-8')
-        #     if isinstance(value, unicode):
-        #         value = value.encode('utf-8')
-        #     _metadata[key] = value
 
         metadata = {}
         for key, value in _metadata.items():
@@ -51,23 +81,23 @@ class iPythonNB(Reader):
             metadata[key] = self.process_metadata(key, value)
         metadata['ipython'] = True
 
-        # Converting ipython to html
-        content, css = nbconvert.export_html(filepath)
-        # content = converter.main_body()  # Use the ipynb converter
-        # change ipython css classes so it does not mess up the blog css
-        # content = '\n'.join(converter.main_body())
-        # replace the highlight tags
-        content = content.replace('class="highlight"', 'class="highlight-ipynb"')
-        # specify <pre> tags
-        content = content.replace('<pre', '<pre class="ipynb"')
-        # create a special div for notebook
-        content = '<div class="ipynb">' + content + "</div>"
-        # Modify max-width for tables
-        content = content.replace('max-width:1500px;', 'max-width:540px;')
-        # h1,h2,...
-        for h in '123456':
-            content = content.replace('<h%s' % h, '<h%s class="ipynb"' % h)
-        return content, metadata
+        # Converting ipythonnb to html
+        config = Config({'CSSHTMLHeaderTransformer': {'enabled': True, 'highlight_class': '.highlight-ipynb'}})
+        exporter = HTMLExporter(config=config, template_file='basic', filters={'highlight2html': custom_highlighter})
+        body, info = exporter.from_filename(filepath)
+
+        def filter_tags(s):
+            l = s.split('\n')
+            exclude = ['a', '.rendered_html', '@media']
+            l = [i for i in l if len(list(filter(i.startswith, exclude))) == 0]
+            ans = '\n'.join(l)
+            return STYLE_TAG.format(ans)
+
+        STYLE_TAG = '<style type=\"text/css\">{0}</style>'
+        css = '\n'.join(filter_tags(css) for css in info['inlining']['css'])
+        css = css + CUSTOM_CSS
+        body = css + body
+        return body, metadata
 
 
 def add_reader(arg):
