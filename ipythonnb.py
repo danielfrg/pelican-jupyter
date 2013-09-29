@@ -1,6 +1,15 @@
 import os
 from pelican import signals
-from pelican.readers import EXTENSIONS, Reader
+
+try:
+    from pelican.readers import BaseReader  # new Pelican API
+except ImportError:
+    from pelican.readers import Reader as BaseReader
+
+try:
+    from pelican.readers import EXTENSIONS  # old Pelican API
+except ImportError:
+    EXTENSIONS = None
 
 try:
     import json
@@ -48,7 +57,7 @@ def custom_highlighter(source, language='ipython'):
     return output.replace('<pre>', '<pre class="ipynb">')
 
 
-class iPythonNB(Reader):
+class iPythonNB(BaseReader):
     enabled = True
     file_extensions = ['ipynb']
 
@@ -101,7 +110,10 @@ class iPythonNB(Reader):
 
 
 def add_reader(arg):
-    EXTENSIONS['ipynb'] = iPythonNB
+    if EXTENSIONS is None:  # new pelican API:
+        arg.settings['READERS']['ipynb'] = iPythonNB
+    else:
+        EXTENSIONS['ipynb'] = iPythonNB
 
 
 def register():
