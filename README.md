@@ -2,10 +2,12 @@
 
 ## Requirements
 
-Mainly: pelican==3.2.2 and ipython==1.0.0
+- `pelican==3.2.2`
+- `ipython==1.0.0`
 
-Also this libraries are used by the IPython.nbconvert:
-Sphinx==1.1.3 and [pandoc](http://johnmacfarlane.net/pandoc/)
+Also some libraries are used by the IPython.nbconvert:
+- `Sphinx==1.1.3`
+- [pandoc](http://johnmacfarlane.net/pandoc/)
 
 I test this under Python 3, Python 2 in theory works but I do not test it.
 
@@ -13,7 +15,7 @@ I recommend using Python 3 because all the libraries already support it.
 
 ## Installation
 
-Put the plugin (`ipythonnb.py`) inside the `pelican_project/plugins/` folder.
+Put the plugin (`ipythonnb` directory) inside the `pelican_project/plugins/` folder.
 
 Then in the `pelicanconf.py`:
 ```
@@ -22,6 +24,10 @@ MARKUP = ('md', 'ipynb')
 PLUGIN_PATH = './plugins'
 PLUGINS = ['ipythonnb', 'other_plugins']
 ```
+
+If you host your site on github pages (or just git) you could use it as a submodule:
+
+`git submodule add git://github.com/danielfrg/middle-theme.git plugins`
 
 ## How to blog
 
