@@ -15,7 +15,7 @@ I recommend using Python 3 because all the libraries already support it.
 
 ## Installation
 
-Put the plugin (`ipythonnb` directory) inside the `pelican_project/plugins/` folder.
+Put the plugin (`__init__.py`) inside the `pelican_project/plugins/ipythonnb` folder.
 
 Then in the `pelicanconf.py`:
 ```
@@ -27,7 +27,9 @@ PLUGINS = ['ipythonnb', 'other_plugins']
 
 If you host your site on github pages (or just git) you could use it as a submodule:
 
-`git submodule add git://github.com/danielfrg/middle-theme.git plugins`
+```
+git submodule add git://github.com/danielfrg/pelican-ipythonnb.git plugins/ipythonnb
+```
 
 ## How to blog
 
