@@ -15,7 +15,7 @@ I recommend using Python 3 because all the libraries already support it.
 
 ## Installation
 
-Put the plugin (`__init__.py`) inside the `pelican_project/plugins/ipythonnb` folder.
+Put the plugin (`__init__.py` and `ipythonnb.py`) inside `pelican_project/plugins/ipythonnb` folder.
 
 Then in the `pelicanconf.py`:
 ```
