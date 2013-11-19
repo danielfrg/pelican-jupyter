@@ -59,6 +59,14 @@ table.dataframe th, td {
     text-align: left;
 }
 
+.anchor-link {
+    display: none;
+}
+
+.anchor-link:hover {
+    display: blockquote;
+}
+
 </style>
 '''
 
