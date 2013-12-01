@@ -2,8 +2,8 @@
 
 ## Requirements
 
-- `pelican==3.2.2`
-- `ipython==1.0.0`
+- `pelican==3.3` > 3 shoud word
+- `ipython==1.1.0` > 1 shoudl work
 
 Also some libraries are used by the IPython.nbconvert:
 - `Sphinx==1.1.3`
@@ -31,7 +31,7 @@ If you host your site on github pages (or just git) you could use it as a submod
 git submodule add git://github.com/danielfrg/pelican-ipythonnb.git plugins/ipythonnb
 ```
 
-## How to blog
+## How to use it
 
 ### Option 1 (recomended)
 
@@ -50,7 +50,10 @@ Category:
 Tags:
 Author:
 Summary:
+
 ```
+
+Note the empty line at the end, you need that.
 
 ### Option 2
 
@@ -64,7 +67,7 @@ Open the `.ipynb` file in a text editor and should see.
 { A_LOT_OF_OTHER_STUFF }
 ```
 
-Add the metadata in the `metadata` json tag:
+Add the metadata in the `metadata` field like this:
 
 ```
 {
