@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- `pelican==3.3` > 3 shoud word
+- `pelican==3.3` > 3 shoud work
 - `ipython==1.1.0` > 1 shoudl work
 
 Also some libraries are used by the IPython.nbconvert:
