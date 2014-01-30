@@ -122,9 +122,8 @@ class iPythonNB(BaseReader):
         # Converting ipythonnb to html
         config = Config({'CSSHTMLHeaderTransformer': {'enabled': True, 'highlight_class': '.highlight-ipynb'}})
         exporter = HTMLExporter(config=config, template_file='basic', filters={'highlight2html': custom_highlighter})
-        body, info = exporter.from_filename(filepath)
 
-        body = re.sub(r'<style(.*)</style>', '', body, flags=re.DOTALL)
+        body, info = exporter.from_filename(filepath)
         metadata['summary'] = ' '.join(body.split(" ")[:50]) + '...'
 
         def filter_tags(s):
