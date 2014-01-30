@@ -27,24 +27,24 @@ except Exception as e:
 
 CUSTOM_CSS = '''
 <style type="text/css">
+
 div.input_area {
     border: none;
     background: none;
+    margin-left: 6px;
+}
+
+.cell {
+    font-size: 14px;
 }
 
 pre.ipynb {
     padding: 3px 9.5px;
+    font-size: 14px;
 }
 
-@media print{*{text-shadow:none !important;color:#000 !important;background:transparent !important;box-shadow:none !important;} a,a:visited{text-decoration:underline;} a[href]:after{content:" (" attr(href) ")";} abbr[title]:after{content:" (" attr(title) ")";} .ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:"";} pre,blockquote{border:1px solid #999;page-break-inside:avoid;} thead{display:table-header-group;} tr,img{page-break-inside:avoid;} img{max-width:100% !important;} @page {margin:0.5cm;}p,h2,h3{orphans:3;widows:3;} h2,h3{page-break-after:avoid;}}
-
-.cell.border-box-sizing.code_cell.vbox {
-  max-width: 750px;
-  margin: 0 auto;
-}
-
-pre {
-    font-size: 1em;
+div.output_subarea {
+    padding: 3px 0;
 }
 
 /* Forcing DataFrame table styles */
@@ -67,11 +67,19 @@ table.dataframe th, td {
     display: blockquote;
 }
 
+@media print{*{text-shadow:none !important;color:#000 !important;background:transparent !important;box-shadow:none !important;} a,a:visited{text-decoration:underline;} a[href]:after{content:" (" attr(href) ")";} abbr[title]:after{content:" (" attr(title) ")";} .ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:"";} pre,blockquote{border:1px solid #999;page-break-inside:avoid;} thead{display:table-header-group;} tr,img{page-break-inside:avoid;} img{max-width:100% !important;} @page {margin:0.5cm;}p,h2,h3{orphans:3;widows:3;} h2,h3{page-break-after:avoid;}}
+
 </style>
 '''
 
 
 def custom_highlighter(source, language='ipython'):
+    '''
+    Makes the syntax highliting from pygments have prefix(`highlight-ipynb`)
+    So it does not break the themes pygments
+
+    It modifies both the css and html
+    '''
     formatter = HtmlFormatter(cssclass='highlight-ipynb')
     output = _pygment_highlight(source, formatter, language)
     output = output.replace('<pre>', '<pre class="ipynb">')
@@ -116,9 +124,12 @@ class iPythonNB(BaseReader):
         exporter = HTMLExporter(config=config, template_file='basic', filters={'highlight2html': custom_highlighter})
         body, info = exporter.from_filename(filepath)
 
+        body = re.sub(r'<style(.*)</style>', '', body, flags=re.DOTALL)
+        metadata['summary'] = ' '.join(body.split(" ")[:50]) + '...'
+
         def filter_tags(s):
             l = s.split('\n')
-            exclude = ['a', '.rendered_html', '@media']
+            exclude = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'ul', 'ol', '.rendered_html', '@media']
             l = [i for i in l if len(list(filter(i.startswith, exclude))) == 0]
             ans = '\n'.join(l)
             return STYLE_TAG.format(ans)
