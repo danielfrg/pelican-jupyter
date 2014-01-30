@@ -24,6 +24,27 @@ except Exception as e:
     IPython = False
     raise e
 
+from html.parser import HTMLParser
+
+
+class MLStripper(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.reset()
+        self.fed = []
+
+    def handle_data(self, d):
+        self.fed.append(d)
+
+    def get_data(self):
+        return ''.join(self.fed)
+
+
+def strip_tags(html):
+    s = MLStripper()
+    s.feed(html)
+    return s.get_data()
+
 
 CUSTOM_CSS = '''
 <style type="text/css">
@@ -124,7 +145,7 @@ class iPythonNB(BaseReader):
         exporter = HTMLExporter(config=config, template_file='basic', filters={'highlight2html': custom_highlighter})
 
         body, info = exporter.from_filename(filepath)
-        metadata['summary'] = ' '.join(body.split(" ")[:50]) + '...'
+        metadata['summary'] = ' '.join(strip_tags(body).split(" ")[:50]) + '...'
 
         def filter_tags(s):
             l = s.split('\n')
