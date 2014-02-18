@@ -196,8 +196,8 @@ class iPythonNB(BaseReader):
         # Remove some CSS styles, so it doesn't break the themes.
         def filter_tags(style_text):
             style_list = style_text.split('\n')
-            exclude = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'ul', 'ol', '.rendered_html',
-                       '@media', '.navbar', 'nav.navbar', '.navbar-text']
+            exclude = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'ul', 'ol', 'li',
+                       '.rendered_html', '@media', '.navbar', 'nav.navbar', '.navbar-text']
             style_list = [i for i in style_list if len(list(filter(i.startswith, exclude))) == 0]
             ans = '\n'.join(style_list)
             return '<style type=\"text/css\">{0}</style>'.format(ans)
