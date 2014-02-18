@@ -56,12 +56,12 @@ div.input_area {
 }
 
 .cell {
-    font-size: 14px;
+    font-size: 13px;
 }
 
 pre.ipynb {
     padding: 3px 9.5px;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 div.output_subarea {
@@ -70,8 +70,8 @@ div.output_subarea {
 
 /* Forcing DataFrame table styles */
 table.dataframe {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 14px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
     line-height: 20px;
 }
 
@@ -196,7 +196,8 @@ class iPythonNB(BaseReader):
         # Remove some CSS styles, so it doesn't break the themes.
         def filter_tags(style_text):
             style_list = style_text.split('\n')
-            exclude = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'ul', 'ol', '.rendered_html', '@media']
+            exclude = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'ul', 'ol', '.rendered_html',
+                       '@media', '.navbar', 'nav.navbar', '.navbar-text']
             style_list = [i for i in style_list if len(list(filter(i.startswith, exclude))) == 0]
             ans = '\n'.join(style_list)
             return '<style type=\"text/css\">{0}</style>'.format(ans)
