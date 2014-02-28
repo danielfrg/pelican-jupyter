@@ -4,6 +4,7 @@ from pelican.readers import MarkdownReader, HTMLReader, BaseReader
 
 try:
     import json
+    import markdown
 
     from IPython.config import Config
     from IPython.nbconvert.exporters import HTMLExporter
