@@ -77,7 +77,7 @@ div.output_subarea {
 
 /* Forcing DataFrame table styles */
 table.dataframe {
-    font-family: Arial, sans-serif, "Microsoft YaHei";
+    font-family: Arial, sans-serif;
     font-size: 13px;
     line-height: 20px;
 }
