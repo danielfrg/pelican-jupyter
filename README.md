@@ -2,16 +2,14 @@
 
 ## Requirements
 
-- `pelican==3.3` > 3 shoud work
-- `ipython==1.1.0` > 1 shoudl work
+- `pelican==3.3`
+- `ipython==1.1.0`
 
-Also some libraries are used by the IPython.nbconvert:
+Also some libraries are used by `IPython.nbconvert`:
 - `Sphinx==1.1.3`
 - [pandoc](http://johnmacfarlane.net/pandoc/)
 
-I test this under Python 3, Python 2 in theory works but I do not test it.
-
-I recommend using Python 3 because all the libraries already support it.
+I recommend Python 3 because all the libraries already support it and is the main target of this plugin, python 2.7 should work in any case.
 
 ## Installation
 
