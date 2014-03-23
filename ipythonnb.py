@@ -1,6 +1,10 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 import os
 from pelican import signals
 from pelican.readers import MarkdownReader, HTMLReader, BaseReader
+
+
 
 try:
     import json
@@ -21,14 +25,16 @@ except Exception as e:
 settings = {}
 
 # Strip HTML tags, for summary creation
-
-
-from html.parser import HTMLParser
+try:
+    from html.parser import HTMLParser
+except ImportError:
+    from HTMLParser import HTMLParser
+    
 
 
 class MLStripper(HTMLParser):
     def __init__(self):
-        super().__init__()
+        HTMLParser.__init__(self)
         self.reset()
         self.fed = []
 
@@ -120,12 +126,12 @@ class MyHTMLParser(HTMLReader._HTMLParser):
     complete div/p/li/etc tags.
     """
     def __init__(self, settings, filename):
-        super(MyHTMLParser, self).__init__(settings, filename)
-
+        HTMLReader._HTMLParser.__init__(self, settings, filename)
+        
         self.summary = None
 
     def handle_starttag(self, tag, attrs):
-        super(MyHTMLParser, self).handle_starttag(tag, attrs)
+        HTMLReader._HTMLParser.handle_starttag(self, tag, attrs)
 
         if self.summary is None:
             # Check for any ipython cell tags
@@ -138,7 +144,7 @@ class MyHTMLParser(HTMLReader._HTMLParser):
                         self.summary = self._data_buffer + '...'
 
     def handle_endtag(self, tag):
-        super(MyHTMLParser, self).handle_endtag(tag)
+        HTMLReader._HTMLParser.handle_endtag(self, tag)
 
         if self.summary is None:
             self.wordcount = len(strip_tags(self._data_buffer).split(" "))
