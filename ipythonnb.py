@@ -2,19 +2,20 @@
 from __future__ import unicode_literals
 import os
 
+import json
+import markdown
+
+import IPython
+from IPython.config import Config
+from IPython.nbconvert.exporters import HTMLExporter
+
 try:
-    import json
-    import markdown
-
-    from IPython.config import Config
-    from IPython.nbconvert.exporters import HTMLExporter
-
-    # TODO: IPython 1.x uses _pygment_highlight
+    from IPython.nbconvert.filters.highlight import _pygment_highlight
+except ImportError:
+    # IPython < 2.0
     from IPython.nbconvert.filters.highlight import _pygments_highlight
-    from pygments.formatters import HtmlFormatter
-except Exception as e:
-    IPython = False
-    raise e
+
+from pygments.formatters import HtmlFormatter
 
 from pelican import signals
 from pelican.readers import MarkdownReader, HTMLReader, BaseReader
