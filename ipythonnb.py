@@ -9,7 +9,8 @@ try:
     from IPython.config import Config
     from IPython.nbconvert.exporters import HTMLExporter
 
-    from IPython.nbconvert.filters.highlight import _pygment_highlight
+    # TODO: IPython 1.x uses _pygment_highlight
+    from IPython.nbconvert.filters.highlight import _pygments_highlight
     from pygments.formatters import HtmlFormatter
 except Exception as e:
     IPython = False
