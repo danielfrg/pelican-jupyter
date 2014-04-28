@@ -104,12 +104,15 @@ table.dataframe th, td {
 def custom_highlighter(source, language='ipython', metadata=None):
     """
     Makes the syntax highliting from pygments have prefix(`highlight-ipynb`)
-    So it does not break the themes pygments
+    So it does not break the theme pygments
 
     It modifies both the css and html
     """
+    if not language:
+        language = 'ipython'
+
     formatter = HtmlFormatter(cssclass='highlight-ipynb')
-    output = _pygment_highlight(source, formatter, language)
+    output = _pygments_highlight(source, formatter, language, metadata)
     output = output.replace('<pre>', '<pre class="ipynb">')
     return output
 
