@@ -131,26 +131,15 @@ class MyHTMLParser(HTMLReader._HTMLParser):
     def __init__(self, settings, filename):
         HTMLReader._HTMLParser.__init__(self, settings, filename)
 
+        self.wordcount = 0
         self.summary = None
-
-    def handle_starttag(self, tag, attrs):
-        HTMLReader._HTMLParser.handle_starttag(self, tag, attrs)
-
-        if self.summary is None:
-            # Check for any ipython cell tags
-            # eg: <div class="cell border-box-sizing code_cell vbox">
-            for k, v in attrs:
-                if k == "class":
-                    ipython_classes = ['cell', 'code_cell']
-                    classes = v.split(' ')
-                    if any(class_ in ipython_classes for class_ in classes):
-                        self.summary = self._data_buffer + '...'
 
     def handle_endtag(self, tag):
         HTMLReader._HTMLParser.handle_endtag(self, tag)
 
-        if self.summary is None:
-            self.wordcount = len(strip_tags(self._data_buffer).split(" "))
+        if self.wordcount < self.settings['SUMMARY_MAX_LENGTH']:
+            print(self.wordcount, self.settings['SUMMARY_MAX_LENGTH'])
+            self.wordcount = len(strip_tags(self._data_buffer).split(' '))
             if self.wordcount > self.settings['SUMMARY_MAX_LENGTH']:
                 self.summary = self._data_buffer + '...'
 
