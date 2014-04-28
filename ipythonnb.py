@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import os
-from pelican import signals
-from pelican.readers import MarkdownReader, HTMLReader, BaseReader
-
-
 
 try:
     import json
@@ -19,17 +15,19 @@ except Exception as e:
     IPython = False
     raise e
 
+from pelican import signals
+from pelican.readers import MarkdownReader, HTMLReader, BaseReader
 
 # General settings, see add_reader at the end
-
 settings = {}
 
 # Strip HTML tags, for summary creation
 try:
+    # Py3k
     from html.parser import HTMLParser
 except ImportError:
+    # Py2.7
     from HTMLParser import HTMLParser
-    
 
 
 class MLStripper(HTMLParser):
@@ -127,7 +125,7 @@ class MyHTMLParser(HTMLReader._HTMLParser):
     """
     def __init__(self, settings, filename):
         HTMLReader._HTMLParser.__init__(self, settings, filename)
-        
+
         self.summary = None
 
     def handle_starttag(self, tag, attrs):
