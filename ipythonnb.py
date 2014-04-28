@@ -100,7 +100,7 @@ table.dataframe th, td {
 '''
 
 
-def custom_highlighter(source, language='ipython'):
+def custom_highlighter(source, language='ipython', metadata=None):
     """
     Makes the syntax highliting from pygments have prefix(`highlight-ipynb`)
     So it does not break the themes pygments
