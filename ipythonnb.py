@@ -138,7 +138,6 @@ class MyHTMLParser(HTMLReader._HTMLParser):
         HTMLReader._HTMLParser.handle_endtag(self, tag)
 
         if self.wordcount < self.settings['SUMMARY_MAX_LENGTH']:
-            print(self.wordcount, self.settings['SUMMARY_MAX_LENGTH'])
             self.wordcount = len(strip_tags(self._data_buffer).split(' '))
             if self.wordcount > self.settings['SUMMARY_MAX_LENGTH']:
                 self.summary = self._data_buffer + '...'
