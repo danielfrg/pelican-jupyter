@@ -56,26 +56,39 @@ def strip_tags(html):
 CUSTOM_CSS = '''
 <style type="text/css">
 
+/* General text, input and output cells */
+div.cell {
+    border: none;
+}
+
+.inner_cell {
+    width: 100%
+}
+
+.text_cell .prompt {
+    display: none;
+}
+
+div.cell {
+    margin: 0;
+    padding: 0;
+}
+
 div.input_area {
     border: none;
     background: none;
     margin-left: 6px;
 }
 
-.cell {
-    font-size: 13px;
+div.output_subarea {
+    padding: 0;
 }
 
 pre.ipynb {
-    padding: 3px 9.5px;
-    font-size: 13px;
+    padding: 5px 5px 5px 10px;
 }
 
-div.output_subarea {
-    padding: 3px 0;
-}
-
-/* Forcing DataFrame table styles */
+/* DataFrame */
 table.dataframe {
     font-family: Arial, sans-serif;
     font-size: 13px;
@@ -86,16 +99,6 @@ table.dataframe th, td {
     padding: 4px;
     text-align: left;
 }
-
-.anchor-link {
-    display: none;
-}
-
-.anchor-link:hover {
-    display: blockquote;
-}
-
-@media print{*{text-shadow:none !important;color:#000 !important;background:transparent !important;box-shadow:none !important;} a,a:visited{text-decoration:underline;} a[href]:after{content:" (" attr(href) ")";} abbr[title]:after{content:" (" attr(title) ")";} .ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:"";} pre,blockquote{border:1px solid #999;page-break-inside:avoid;} thead{display:table-header-group;} tr,img{page-break-inside:avoid;} img{max-width:100% !important;} @page {margin:0.5cm;}p,h2,h3{orphans:3;widows:3;} h2,h3{page-break-after:avoid;}}
 
 </style>
 '''
