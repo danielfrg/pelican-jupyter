@@ -31,12 +31,12 @@ git submodule add git://github.com/danielfrg/pelican-ipythonnb.git plugins/ipyth
 
 ## How to use it
 
-### Option 1 (recomended)
+### Option 1 (recommended)
 
 Write the post using the IPython notebook interface, using markdown, equations, etc.
 
 Place the `.ipynb` file in the content folder and create a new file with the
-same name as the ipython notebook with extention `.ipynb-meta`. So you should have:
+same name as the ipython notebook with extension `.ipynb-meta`. So you should have:
 `my_post.ipynb` and `my_post.ipynb-meta`
 
 The `ipynb-meta` should have the regular markdown metadata:
