@@ -1,4 +1,4 @@
-# Pelican plugin for blogging with iPython Notebooks
+# Pelican plugin for blogging with IPython Notebooks
 
 ## Requirements
 
@@ -33,7 +33,7 @@ git submodule add git://github.com/danielfrg/pelican-ipythonnb.git plugins/ipyth
 
 ### Option 1 (recomended)
 
-Write the post using the iPython notebook interface, using markdown, equations, etc.
+Write the post using the IPython notebook interface, using markdown, equations, etc.
 
 Place the `.ipynb` file in the content folder and create a new file with the
 same name as the ipython notebook with extention `.ipynb-meta`. So you should have:
@@ -60,7 +60,7 @@ Open the `.ipynb` file in a text editor and should see.
 ```
 {
     "metadata": {
-        "name": "Super iPython NB"
+        "name": "Super IPython NB"
     },
 { A_LOT_OF_OTHER_STUFF }
 ```
@@ -70,8 +70,8 @@ Add the metadata in the `metadata` field like this:
 ```
 {
  "metadata": {
-        "name": "Super iPython NB",
-        "Title": "Blogging with iPython notebooks in pelican",
+        "name": "Super IPython NB",
+        "Title": "Blogging with IPython notebooks in pelican",
         "Date": "2013-2-16",
         "Category": "Category",
         "Tags": "tag2, tag2",

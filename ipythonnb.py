@@ -146,7 +146,7 @@ class MyHTMLParser(HTMLReader._HTMLParser):
                 self.summary = self._data_buffer + '...'
 
 
-class iPythonNB(BaseReader):
+class IPythonNB(BaseReader):
     enabled = True
     file_extensions = ['ipynb']
 
@@ -213,7 +213,7 @@ class iPythonNB(BaseReader):
 
 def add_reader(arg):
     global settings
-    arg.settings['READERS']['ipynb'] = iPythonNB
+    arg.settings['READERS']['ipynb'] = IPythonNB
     settings = arg.settings
 
 
