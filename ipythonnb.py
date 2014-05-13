@@ -106,7 +106,7 @@ table.dataframe th, td {
 
 def custom_highlighter(source, language='ipython', metadata=None):
     """
-    Makes the syntax highliting from pygments have prefix(`highlight-ipynb`)
+    Makes the syntax highlighting from pygments have prefix(`highlight-ipynb`)
     So it does not break the theme pygments
 
     It modifies both the css and html
@@ -128,7 +128,7 @@ class MyHTMLParser(HTMLReader._HTMLParser):
 
     This is needed in order to generate valid HTML for the summary, because a simple split
     breaks the html generating errors on the theme.
-    The downside is that the summary lenght is not exactly the specified, it includes
+    The downside is that the summary length is not exactly the specified, it includes
     complete div/p/li/etc tags.
     """
     def __init__(self, settings, filename):
@@ -146,7 +146,7 @@ class MyHTMLParser(HTMLReader._HTMLParser):
                 self.summary = self._data_buffer + '...'
 
 
-class iPythonNB(BaseReader):
+class IPythonNB(BaseReader):
     enabled = True
     file_extensions = ['ipynb']
 
@@ -169,7 +169,7 @@ class iPythonNB(BaseReader):
             ipynb_file = open(filepath)
             metadata = json.load(ipynb_file)['metadata']
 
-            # Fix metadata to pelican standars
+            # Fix metadata to pelican standards
             for key, value in metadata.items():
                 del metadata[key]
                 key = key.lower()
@@ -213,7 +213,7 @@ class iPythonNB(BaseReader):
 
 def add_reader(arg):
     global settings
-    arg.settings['READERS']['ipynb'] = iPythonNB
+    arg.settings['READERS']['ipynb'] = IPythonNB
     settings = arg.settings
 
 
