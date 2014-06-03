@@ -20,7 +20,7 @@ Then in the `pelicanconf.py`:
 MARKUP = ('md', 'ipynb')
 
 PLUGIN_PATH = './plugins'
-PLUGINS = ['ipythonnb', 'other_plugins']
+PLUGINS = ['ipythonnb']
 ```
 
 If you host your site on github pages (or just git) you could use it as a submodule:
