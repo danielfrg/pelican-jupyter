@@ -1,9 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import os
-
 import json
 import markdown
+
+try:
+    # Py3k
+    from html.parser import HTMLParser
+except ImportError:
+    # Py2.7
+    from HTMLParser import HTMLParser
+
+from pelican import signals
+from pelican.readers import MarkdownReader, HTMLReader, BaseReader
 
 import IPython
 from IPython.config import Config
@@ -15,23 +24,13 @@ except ImportError:
     # IPython < 2.0
     from IPython.nbconvert.filters.highlight import _pygments_highlight
 
+from bs4 import BeautifulSoup
 from pygments.formatters import HtmlFormatter
-
-from pelican import signals
-from pelican.readers import MarkdownReader, HTMLReader, BaseReader
 
 # General settings, see add_reader at the end
 settings = {}
 
-# Strip HTML tags, for summary creation
-try:
-    # Py3k
-    from html.parser import HTMLParser
-except ImportError:
-    # Py2.7
-    from HTMLParser import HTMLParser
-
-
+# Utility to strip HTML tags for summary creation
 class MLStripper(HTMLParser):
     def __init__(self):
         HTMLParser.__init__(self)
