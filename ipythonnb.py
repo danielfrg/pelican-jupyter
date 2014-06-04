@@ -24,7 +24,6 @@ except ImportError:
     # IPython < 2.0
     from IPython.nbconvert.filters.highlight import _pygments_highlight
 
-from bs4 import BeautifulSoup
 from pygments.formatters import HtmlFormatter
 
 # General settings, see add_reader at the end
