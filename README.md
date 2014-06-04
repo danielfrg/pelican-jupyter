@@ -7,12 +7,8 @@ Python 2.7 and 3.4 are supported
 - `pelican==3.3`
 - `ipython==2.1`
 
-Also some libraries are used by `IPython.nbconvert`:
-- `Sphinx==1.1.3`
+Libraries needed by `IPython.nbconvert`:
 - [pandoc](http://johnmacfarlane.net/pandoc/)
-
-For stuff like toggable cell you need:
-- `beautifulsoup4==4.3.2` only python 2.7 unfortunately
 
 ## Installation
 
