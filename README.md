@@ -2,14 +2,17 @@
 
 ## Requirements
 
+Python 2.7 and 3.4 are supported
+
 - `pelican==3.3`
-- `ipython==1.1.0`
+- `ipython==2.1`
 
 Also some libraries are used by `IPython.nbconvert`:
 - `Sphinx==1.1.3`
 - [pandoc](http://johnmacfarlane.net/pandoc/)
 
-I recommend Python 3 because all the libraries already support it and is the main target of this plugin, python 2.7 should work in any case.
+For stuff like toggable cell you need:
+- `beautifulsoup4==4.3.2` only python 2.7 unfortunately
 
 ## Installation
 
