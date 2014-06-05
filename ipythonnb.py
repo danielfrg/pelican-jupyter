@@ -24,6 +24,11 @@ except ImportError:
     # IPython < 2.0
     from IPython.nbconvert.filters.highlight import _pygments_highlight
 
+try:
+    from bs4 import BeautifulSoup
+except:
+    BeautifulSoup = None
+
 from pygments.formatters import HtmlFormatter
 
 # General settings, see add_reader at the end
@@ -182,8 +187,16 @@ class IPythonNB(BaseReader):
 
         content, info = exporter.from_filename(filepath)
 
+        if BeautifulSoup:
+            soup = BeautifulSoup(content)
+            for i in soup.findAll("div", {"class" : "input"}):
+                if i.findChildren()[1].find(text='#ignore') is not None:
+                    i.extract()
+        else:
+            soup = content
+
         # Process using Pelican HTMLReader
-        content = '<body>{0}</body>'.format(content)  # So Pelican HTMLReader works
+        content = '<body>{0}</body>'.format(soup)  # So Pelican HTMLReader works
         parser = MyHTMLParser(self.settings, filename)
         parser.feed(content)
         parser.close()

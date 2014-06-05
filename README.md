@@ -10,9 +10,12 @@ Python 2.7 and 3.4 are supported
 Libraries needed by `IPython.nbconvert`:
 - [pandoc](http://johnmacfarlane.net/pandoc/)
 
+For advanced options:
+- `beautifulsoup==4.3.2`
+
 ## Installation
 
-Put the plugin (`__init__.py` and `ipythonnb.py`) inside `pelican_project/plugins/ipythonnb` folder.
+Put the plugin (`__init__.py` and `ipythonnb.py`) inside the `pelican_project/plugins/ipythonnb` directory.
 
 Then in the `pelicanconf.py`:
 ```
@@ -38,7 +41,8 @@ Place the `.ipynb` file in the content folder and create a new file with the
 same name as the ipython notebook with extension `.ipynb-meta`. So you should have:
 `my_post.ipynb` and `my_post.ipynb-meta`
 
-The `ipynb-meta` should have the regular markdown metadata:
+The `ipynb-meta` should have the regular markdown metadata (note the empty line at the end, you need that):
+
 ```
 Title:
 Slug:
@@ -49,8 +53,6 @@ Author:
 Summary:
 
 ```
-
-Note the empty line at the end, you need that.
 
 ### Option 2
 
@@ -79,3 +81,11 @@ Add the metadata in the `metadata` field like this:
     },
     { A_LOT_OF_OTHER_STUFF }
 ```
+
+### Options
+
+To ignore an input cell (removing it from the post content) include an `#ignore` comment anywhere in the cell.
+
+## TODO
+
+Toggable cells: javascript code is easy but I am not sure about the how the UI should look.
