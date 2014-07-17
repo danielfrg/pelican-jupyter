@@ -145,7 +145,7 @@ class MyHTMLParser(HTMLReader._HTMLParser):
 
         if self.wordcount < self.settings['SUMMARY_MAX_LENGTH']:
             self.wordcount = len(strip_tags(self._data_buffer).split(' '))
-            if self.wordcount > self.settings['SUMMARY_MAX_LENGTH']:
+            if self.wordcount >= self.settings['SUMMARY_MAX_LENGTH']:
                 self.summary = self._data_buffer + '...'
 
 
