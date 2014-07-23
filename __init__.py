@@ -1,1 +1,1 @@
-from .ipythonnb import *
+from .ipynb import *

@@ -4,7 +4,7 @@
 
 Python 2.7 and 3.4 are supported
 
-- `pelican==3.3`
+- `pelican==3.4`
 - `ipython==2.1`
 
 Libraries needed by `IPython.nbconvert`:
@@ -15,20 +15,20 @@ For advanced options:
 
 ## Installation
 
-Put the plugin (`__init__.py` and `ipythonnb.py`) inside the `pelican_project/plugins/ipythonnb` directory.
+Put the plugin (`__init__.py` and `ipynb.py`) inside the `pelican_project/plugins/ipynb` directory.
 
 Then in the `pelicanconf.py`:
 ```
 MARKUP = ('md', 'ipynb')
 
 PLUGIN_PATH = './plugins'
-PLUGINS = ['ipythonnb']
+PLUGINS = ['ipynb']
 ```
 
 If you host your site on github pages (or just git) you could use it as a submodule:
 
 ```
-git submodule add git://github.com/danielfrg/pelican-ipythonnb.git plugins/ipythonnb
+git submodule add git://github.com/danielfrg/pelican-ipynb.git plugins/ipynb
 ```
 
 ## How to use it
