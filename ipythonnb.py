@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 import os
 import json
+import logging
+
 import markdown
 
 try:
@@ -31,8 +33,9 @@ except:
 
 from pygments.formatters import HtmlFormatter
 
-# General settings, see add_reader at the end
-settings = {}
+
+logger = logging.getLogger(__name__)
+
 
 # Utility to strip HTML tags for summary creation
 class MLStripper(HTMLParser):
@@ -136,9 +139,24 @@ class MyHTMLParser(HTMLReader._HTMLParser):
     """
     def __init__(self, settings, filename):
         HTMLReader._HTMLParser.__init__(self, settings, filename)
-
         self.wordcount = 0
         self.summary = None
+
+        self.stop_tags = [('div', ('class', 'input')), ('div', ('class', 'output'))]
+        if 'IPYNB_STOP_SUMMARY_TAGS' in self.settings.keys():
+            self.stop_tags = self.settings['IPYNB_STOP_SUMMARY_TAGS']
+        if 'IPYNB_EXTEND_STOP_SUMMARY_TAGS' in self.settings.keys():
+            self.stop_tags.extend(self.settings['IPYNB_EXTEND_STOP_SUMMARY_TAGS'])
+
+
+    def handle_starttag(self, tag, attrs):
+        HTMLReader._HTMLParser.handle_starttag(self, tag, attrs)
+
+        if self.wordcount < self.settings['SUMMARY_MAX_LENGTH']:
+            mask = [stoptag[0] == tag and (stoptag[1] is None or stoptag[1] in attrs) for stoptag in self.stop_tags]
+            if any(mask):
+                self.summary = self._data_buffer
+                self.wordcount = self.settings['SUMMARY_MAX_LENGTH']
 
     def handle_endtag(self, tag):
         HTMLReader._HTMLParser.handle_endtag(self, tag)
@@ -146,7 +164,7 @@ class MyHTMLParser(HTMLReader._HTMLParser):
         if self.wordcount < self.settings['SUMMARY_MAX_LENGTH']:
             self.wordcount = len(strip_tags(self._data_buffer).split(' '))
             if self.wordcount >= self.settings['SUMMARY_MAX_LENGTH']:
-                self.summary = self._data_buffer + '...'
+                self.summary = self._data_buffer
 
 
 class IPythonNB(BaseReader):
@@ -220,6 +238,9 @@ class IPythonNB(BaseReader):
         body = css + body
 
         return body, metadata
+
+
+settings = {}
 
 
 def add_reader(arg):

@@ -82,10 +82,17 @@ Add the metadata in the `metadata` field like this:
     { A_LOT_OF_OTHER_STUFF }
 ```
 
-### Options
+## Options
 
-To ignore an input cell (removing it from the post content) include an `#ignore` comment anywhere in the cell.
+You can include an `#ignore` comment anywhere in a cell of the ipython notebook
+to ignore it, removing it from the post content.
 
+On the `pelicanconf.py` you can use:
+
+- `IPYNB_STOP_SUMMARY_TAGS`: list of tuple with the html tag and attribute (python HTMLParser format)
+when the summary creation should stop, this is usefull to generate valid/shorter summaries.
+`default = [('div', ('class', 'input')), ('div', ('class', 'output'))]`
+- `IPYNB_EXTEND_STOP_SUMMARY_TAGS`: list of tuples to extend the default `IPYNB_STOP_SUMMARY_TAGS`
 ## TODO
 
 Toggable cells: javascript code is easy but I am not sure about the how the UI should look.
