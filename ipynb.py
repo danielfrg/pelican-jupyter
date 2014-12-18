@@ -195,7 +195,7 @@ class IPythonNB(BaseReader):
                 del metadata[key]
                 key = key.lower()
                 metadata[key] = self.process_metadata(key, value)
-            metadata['ipython'] = True
+        metadata['ipython'] = True
 
         # Convert ipython notebook to html
         config = Config({'CSSHTMLHeaderTransformer': {'enabled': True,
