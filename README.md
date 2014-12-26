@@ -1,5 +1,7 @@
 # Pelican plugin for blogging with IPython Notebooks
 
+This version is modified to parse summary correctly and add a script for using MathJax.
+
 ## Requirements
 
 Python 2.7 and 3.4 are supported

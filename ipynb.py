@@ -109,6 +109,35 @@ table.dataframe th, td {
 </style>
 '''
 
+CUSTOM_SCRIPT = '''
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: 'center'," +
+        "    displayIndent: '0em'," +
+        "    showMathMenu: true," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['$','$'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'black ! important'} }" +
+        "    } " +
+        "}); ";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>	
+'''
 
 def custom_highlighter(source, language='ipython', metadata=None):
     """
@@ -218,10 +247,10 @@ class IPythonNB(BaseReader):
         parser = MyHTMLParser(self.settings, filename)
         parser.feed(content)
         parser.close()
-        body = parser.body
+        body = parser.body.replace('\[', '$$').replace('\]','$$').replace('\(', '$').replace('\)','$')
         summary = parser.summary
 
-        metadata['summary'] = summary
+        #metadata['summary'] = summary
 
         # Remove some CSS styles, so it doesn't break the themes.
         def filter_tags(style_text):
@@ -235,8 +264,7 @@ class IPythonNB(BaseReader):
 
         css = '\n'.join(filter_tags(css) for css in info['inlining']['css'])
         css = CUSTOM_CSS + css
-        body = css + body
-
+        body = css + body + CUSTOM_SCRIPT
         return body, metadata
 
 
