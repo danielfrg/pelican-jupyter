@@ -4,14 +4,12 @@
 
 Python 2.7 and 3.4 are supported
 
-- `pelican==3.4`
-- `ipython==2.1`
+- `pelican==3.5`
+- `ipython==3.0`
+- `markdown==2.6.1`
 
 Libraries needed by `IPython.nbconvert`:
 - [pandoc](http://johnmacfarlane.net/pandoc/)
-
-For advanced options:
-- `beautifulsoup==4.3.2`
 
 ## Installation
 

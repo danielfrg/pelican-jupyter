@@ -37,28 +37,6 @@ from pygments.formatters import HtmlFormatter
 logger = logging.getLogger(__name__)
 
 
-# Utility to strip HTML tags for summary creation
-class MLStripper(HTMLParser):
-    def __init__(self):
-        HTMLParser.__init__(self)
-        self.reset()
-        self.fed = []
-
-    def handle_data(self, d):
-        self.fed.append(d)
-
-    def get_data(self):
-        return ''.join(self.fed)
-
-
-def strip_tags(html):
-    s = MLStripper()
-    s.feed(html)
-    return s.get_data()
-
-
-# Fix CSS
-
 CUSTOM_CSS = '''
 <style type="text/css">
 
@@ -109,62 +87,42 @@ table.dataframe th, td {
 </style>
 '''
 
+LATEX_CUSTOM_SCRIPT = '''
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: 'center'," +
+        "    displayIndent: '0em'," +
+        "    showMathMenu: true," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['$','$'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'black ! important'} }" +
+        "    } " +
+        "}); ";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+'''
 
-def custom_highlighter(source, language='ipython', metadata=None):
-    """
-    Makes the syntax highlighting from pygments have prefix(`highlight-ipynb`)
-    So it does not break the theme pygments
-
-    It modifies both the css and html
-    """
-    if not language:
-        language = 'ipython'
-
-    formatter = HtmlFormatter(cssclass='highlight-ipynb')
-    output = _pygments_highlight(source, formatter, language, metadata)
-    output = output.replace('<pre>', '<pre class="ipynb">')
-    return output
-
-
-class MyHTMLParser(HTMLReader._HTMLParser):
-    """
-    Extends Pelican HTMLReader._HTMLParser by including the summary of the content
-    based on settings['SUMMARY_MAX_LENGTH'].
-    Also stops the summary if founds any div containing ipython notebook code cells
-
-    This is needed in order to generate valid HTML for the summary, because a simple split
-    breaks the html generating errors on the theme.
-    The downside is that the summary length is not exactly the specified, it includes
-    complete div/p/li/etc tags.
-    """
-    def __init__(self, settings, filename):
-        HTMLReader._HTMLParser.__init__(self, settings, filename)
-        self.wordcount = 0
-        self.summary = None
-
-        self.stop_tags = [('div', ('class', 'input')), ('div', ('class', 'output'))]
-        if 'IPYNB_STOP_SUMMARY_TAGS' in self.settings.keys():
-            self.stop_tags = self.settings['IPYNB_STOP_SUMMARY_TAGS']
-        if 'IPYNB_EXTEND_STOP_SUMMARY_TAGS' in self.settings.keys():
-            self.stop_tags.extend(self.settings['IPYNB_EXTEND_STOP_SUMMARY_TAGS'])
+def register():
+    signals.initialized.connect(add_reader)
 
 
-    def handle_starttag(self, tag, attrs):
-        HTMLReader._HTMLParser.handle_starttag(self, tag, attrs)
-
-        if self.wordcount < self.settings['SUMMARY_MAX_LENGTH']:
-            mask = [stoptag[0] == tag and (stoptag[1] is None or stoptag[1] in attrs) for stoptag in self.stop_tags]
-            if any(mask):
-                self.summary = self._data_buffer
-                self.wordcount = self.settings['SUMMARY_MAX_LENGTH']
-
-    def handle_endtag(self, tag):
-        HTMLReader._HTMLParser.handle_endtag(self, tag)
-
-        if self.wordcount < self.settings['SUMMARY_MAX_LENGTH']:
-            self.wordcount = len(strip_tags(self._data_buffer).split(' '))
-            if self.wordcount >= self.settings['SUMMARY_MAX_LENGTH']:
-                self.summary = self._data_buffer
+def add_reader(arg):
+    arg.settings['READERS']['ipynb'] = IPythonNB
 
 
 class IPythonNB(BaseReader):
@@ -172,6 +130,7 @@ class IPythonNB(BaseReader):
     file_extensions = ['ipynb']
 
     def read(self, filepath):
+        logger.info(2)
         metadata = {}
 
         # Files
@@ -235,19 +194,86 @@ class IPythonNB(BaseReader):
 
         css = '\n'.join(filter_tags(css) for css in info['inlining']['css'])
         css = CUSTOM_CSS + css
-        body = css + body
+        body = css + body + LATEX_CUSTOM_SCRIPT
 
         return body, metadata
 
 
-settings = {}
+class MyHTMLParser(HTMLReader._HTMLParser):
+    """
+    Custom Pelican `HTMLReader._HTMLParser` to create the summary of the content
+    based on settings['SUMMARY_MAX_LENGTH'].
+
+    Summary is stoped if founds any div containing ipython notebook code cells.
+    This is needed in order to generate valid HTML for the summary,
+    a simple string split will break the html generating errors on the theme.
+    The downside is that the summary length is not exactly the specified, it stops at
+    completed div/p/li/etc tags.
+    """
+    def __init__(self, settings, filename):
+        HTMLReader._HTMLParser.__init__(self, settings, filename)
+        self.wordcount = 0
+        self.summary = None
+
+        self.stop_tags = [('div', ('class', 'input')), ('div', ('class', 'output'))]
+        if 'IPYNB_STOP_SUMMARY_TAGS' in self.settings.keys():
+            self.stop_tags = self.settings['IPYNB_STOP_SUMMARY_TAGS']
+        if 'IPYNB_EXTEND_STOP_SUMMARY_TAGS' in self.settings.keys():
+            self.stop_tags.extend(self.settings['IPYNB_EXTEND_STOP_SUMMARY_TAGS'])
 
 
-def add_reader(arg):
-    global settings
-    arg.settings['READERS']['ipynb'] = IPythonNB
-    settings = arg.settings
+    def handle_starttag(self, tag, attrs):
+        HTMLReader._HTMLParser.handle_starttag(self, tag, attrs)
+
+        if self.wordcount < self.settings['SUMMARY_MAX_LENGTH']:
+            mask = [stoptag[0] == tag and (stoptag[1] is None or stoptag[1] in attrs) for stoptag in self.stop_tags]
+            if any(mask):
+                self.summary = self._data_buffer
+                self.wordcount = self.settings['SUMMARY_MAX_LENGTH']
+
+    def handle_endtag(self, tag):
+        HTMLReader._HTMLParser.handle_endtag(self, tag)
+
+        if self.wordcount < self.settings['SUMMARY_MAX_LENGTH']:
+            self.wordcount = len(strip_tags(self._data_buffer).split(' '))
+            if self.wordcount >= self.settings['SUMMARY_MAX_LENGTH']:
+                self.summary = self._data_buffer
 
 
-def register():
-    signals.initialized.connect(add_reader)
+def strip_tags(html):
+    s = HTMLTagStripper()
+    s.feed(html)
+    return s.get_data()
+
+
+class HTMLTagStripper(HTMLParser):
+    """
+    Custom HTML Parser to strip HTML tags
+    Useful for summary creation
+    """
+    def __init__(self):
+        HTMLParser.__init__(self)
+        self.reset()
+        self.fed = []
+
+    def handle_data(self, html):
+        self.fed.append(html)
+
+    def get_data(self):
+        return ''.join(self.fed)
+
+
+def custom_highlighter(source, language='ipython', metadata=None):
+    """
+    Makes the syntax highlighting from pygments have prefix(`highlight-ipynb`)
+    So it doesn't break the theme pygments
+
+    It modifies both css prefixes and html tags
+    """
+    if not language:
+        language = 'ipython'
+
+    formatter = HtmlFormatter(cssclass='highlight-ipynb')
+    output = _pygments_highlight(source, formatter, language, metadata)
+    output = output.replace('<pre>', '<pre class="ipynb">')
+    return output
