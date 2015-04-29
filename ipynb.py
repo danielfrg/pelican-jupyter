@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import os
-import json
-import logging
 
-import markdown
+import os
+import re
+import json
 
 try:
     # Py3k
@@ -33,59 +31,6 @@ except:
 
 from pygments.formatters import HtmlFormatter
 
-
-logger = logging.getLogger(__name__)
-
-
-CUSTOM_CSS = '''
-<style type="text/css">
-
-/* General text, input and output cells */
-div.cell {
-    border: none;
-}
-
-.inner_cell {
-    width: 100%
-}
-
-.text_cell .prompt {
-    display: none;
-}
-
-div.cell {
-    margin: 0;
-    padding: 0;
-}
-
-div.input_area {
-    border: none;
-    background: none;
-    margin-left: 6px;
-}
-
-div.output_subarea {
-    padding: 0;
-}
-
-pre.ipynb {
-    padding: 5px 5px 5px 10px;
-}
-
-/* DataFrame */
-table.dataframe {
-    font-family: Arial, sans-serif;
-    font-size: 13px;
-    line-height: 20px;
-}
-
-table.dataframe th, td {
-    padding: 4px;
-    text-align: left;
-}
-
-</style>
-'''
 
 LATEX_CUSTOM_SCRIPT = '''
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
@@ -130,7 +75,6 @@ class IPythonNB(BaseReader):
     file_extensions = ['ipynb']
 
     def read(self, filepath):
-        logger.info(2)
         metadata = {}
 
         # Files
@@ -182,19 +126,25 @@ class IPythonNB(BaseReader):
 
         metadata['summary'] = summary
 
-        # Remove some CSS styles, so it doesn't break the themes.
-        def filter_tags(style_text):
-            style_list = style_text.split('\n')
-            exclude = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'ul', 'ol', 'li',
-                       '.rendered_html', '@media', '.navbar', 'nav.navbar', '.navbar-text',
-                       'code', 'pre', 'div.text_cell_render']
-            style_list = [i for i in style_list if len(list(filter(i.startswith, exclude))) == 0]
-            ans = '\n'.join(style_list)
-            return '<style type=\"text/css\">{0}</style>'.format(ans)
+        def filter_css(style_text):
+            '''
+            HACK: IPython returns a lot of CSS including its own bootstrap.
+            Get only the IPython Notebook CSS styles.
+            '''
+            index = style_text.find('/*!\n*\n* IPython notebook\n*\n*/')
+            if index > 0:
+                style_text = style_text[index:]
+            index = style_text.find('/*!\n*\n* IPython notebook webapp\n*\n*/')
+            if index > 0:
+                style_text = style_text[:index]
 
-        css = '\n'.join(filter_tags(css) for css in info['inlining']['css'])
-        css = CUSTOM_CSS + css
-        body = css + body + LATEX_CUSTOM_SCRIPT
+            style_text = re.sub(r'color\:\#0+(;)?', '', style_text)
+            style_text = re.sub(r'\.rendered_html[a-z0-9 ]*\{[a-z0-9:;%.#\-\s\n]+\}', '', style_text)
+
+            return '<style type=\"text/css\">{0}</style>'.format(style_text)
+
+        ipython_css = '\n'.join(filter_css(css_style) for css_style in info['inlining']['css'])
+        body = ipython_css + body + LATEX_CUSTOM_SCRIPT
 
         return body, metadata
 
