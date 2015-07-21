@@ -109,7 +109,7 @@ class IPythonNB(BaseReader):
         content, info = exporter.from_filename(filepath)
 
         if BeautifulSoup:
-            soup = BeautifulSoup(content, 'html.parser')
+            soup = BeautifulSoup(content)
             for i in soup.findAll("div", {"class" : "input"}):
                 if i.findChildren()[1].find(text='#ignore') is not None:
                     i.extract()
@@ -139,7 +139,7 @@ class IPythonNB(BaseReader):
                 style_text = style_text[:index]
 
             style_text = re.sub(r'color\:\#0+(;)?', '', style_text)
-            style_text = re.sub(r'\.rendered_html[a-z0-9 ]*\{[a-z0-9:;%.#\-\s\n]+\}', '', style_text)
+            style_text = re.sub(r'\.rendered_html[a-z0-9,._ ]*\{[a-z0-9:;%.#\-\s\n]+\}', '', style_text)
 
             return '<style type=\"text/css\">{0}</style>'.format(style_text)
 
