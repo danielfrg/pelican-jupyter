@@ -122,9 +122,10 @@ class IPythonNB(BaseReader):
         parser.feed(content)
         parser.close()
         body = parser.body
-        summary = parser.summary
-
-        metadata['summary'] = summary
+        if ('IPYNB_USE_META_SUMMARY' in self.settings.keys() and \
+          self.settings['IPYNB_USE_META_SUMMARY'] == False) or \
+          'IPYNB_USE_META_SUMMARY' not in self.settings.keys():
+            metadata['summary'] = parser.summary
 
         def filter_css(style_text):
             '''

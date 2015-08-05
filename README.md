@@ -1,7 +1,5 @@
 # Pelican plugin for blogging with IPython Notebooks
 
-This version is modified to parse summary correctly and add a script for using MathJax.
-
 ## Requirements
 
 Python 2.7 and 3.4 are supported
@@ -102,6 +100,7 @@ to ignore it, removing it from the post content.
 
 On the `pelicanconf.py` you can use:
 
+- `IPYNB_USE_META_SUMMARY`: boolean variable to use the summary provided in the `.ipynb-meta` file instead of creating it from the notebook.
 - `IPYNB_STOP_SUMMARY_TAGS`: list of tuple with the html tag and attribute (python HTMLParser format)
 when the summary creation should stop, this is usefull to generate valid/shorter summaries.
 `default = [('div', ('class', 'input')), ('div', ('class', 'output'))]`
