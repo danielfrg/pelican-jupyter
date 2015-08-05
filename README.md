@@ -6,14 +6,25 @@ This version is modified to parse summary correctly and add a script for using M
 
 Python 2.7 and 3.4 are supported
 
-- `pelican==3.4`
-- `ipython==2.1`
+Recommended version of libraries are:
 
-Libraries needed by `IPython.nbconvert`:
-- [pandoc](http://johnmacfarlane.net/pandoc/)
+- `pelican==3.5`
+- `ipython==3.0`
+- `markdown==2.6.1`
 
-For advanced options:
-- `beautifulsoup==4.3.2`
+There is a chance the plugin will work correctly with older version but it is not guarantied.
+
+## CSS note
+
+There might be some issues/conflicts regarding the CSS that IPython Notebook requires and the pelican theme.
+
+I make my best to make the plugin work with every theme but for obvious reasons I cannot guarantee that it will look good in any pelican theme.
+
+I only try this plugin on the pelican theme for my blog: [middle theme](https://github.com/danielfrg/middle-theme) while making it the most general and useful out of the box as possible, a difficult compromise sometimes.
+
+IPython Notebook is based on bootstrap so you probably will need your theme to be based on that it if you want the html and css to render nicely.
+
+I try to inject only the necessary CSS, removing IPython's bootstrap but fixes are needed in some cases, if you find this issues I recommend looking at how my theme fixes them.
 
 ## Installation
 
