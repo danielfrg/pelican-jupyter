@@ -15,14 +15,25 @@ from pelican import signals
 from pelican.readers import MarkdownReader, HTMLReader, BaseReader
 
 import IPython
-from IPython.config import Config
-from IPython.nbconvert.exporters import HTMLExporter
-
 try:
-    from IPython.nbconvert.filters.highlight import _pygment_highlight
+    # Jupyter  
+    from traitlets.config import Config
+except ImportError:
+    # IPython < 4.0
+    from IPython.config import Config
+try:
+    # Jupyter
+    import nbconvert
+except ImportError:
+    # IPython < 4.0
+    import IPython.nbconvert as nbconvert
+
+from nbconvert.exporters import HTMLExporter
+try:
+    from nbconvert.filters.highlight import _pygment_highlight
 except ImportError:
     # IPython < 2.0
-    from IPython.nbconvert.filters.highlight import _pygments_highlight
+    from nbconvert.filters.highlight import _pygments_highlight
 
 try:
     from bs4 import BeautifulSoup
@@ -82,7 +93,6 @@ class IPythonNB(BaseReader):
         filename = os.path.basename(filepath)
         metadata_filename = filename.split('.')[0] + '.ipynb-meta'
         metadata_filepath = os.path.join(filedir, metadata_filename)
-
         # Load metadata
         if os.path.exists(metadata_filepath):
             # Metadata is on a external file, process using Pelican MD Reader
@@ -99,7 +109,6 @@ class IPythonNB(BaseReader):
                 key = key.lower()
                 metadata[key] = self.process_metadata(key, value)
         metadata['ipython'] = True
-
         # Convert ipython notebook to html
         config = Config({'CSSHTMLHeaderTransformer': {'enabled': True,
                          'highlight_class': '.highlight-ipynb'}})
