@@ -1,4 +1,4 @@
-# Pelican plugin for blogging with IPython Notebooks
+# Pelican plugin for blogging with Jupyter/IPython Notebooks
 
 ## Requirements
 
@@ -6,23 +6,25 @@ Python 2.7 and 3.4 are supported
 
 Recommended version of libraries are:
 
+- `jupyter==1.0`
 - `pelican==3.5`
-- `ipython==3.0`
+- `ipython==4.0`
+- `nbconvert==4.0`
 - `markdown==2.6.1`
 
-There is a chance the plugin will work correctly with older version but it is not guarantied.
+There is a good chance the plugin will work correctly with older versions of Pelican and IPython.
 
-## CSS note
+## CSS
 
-There might be some issues/conflicts regarding the CSS that IPython Notebook requires and the pelican theme.
+There might be some issues/conflicts regarding the CSS that Jupyter Notebook requires and the pelican theme.
 
-I make my best to make the plugin work with every theme but for obvious reasons I cannot guarantee that it will look good in any pelican theme.
+I do my best to make the plugin work with every theme but for obvious reasons I cannot guarantee that it will look good in any pelican theme.
 
 I only try this plugin on the pelican theme for my blog: [middle theme](https://github.com/danielfrg/middle-theme) while making it the most general and useful out of the box as possible, a difficult compromise sometimes.
 
-IPython Notebook is based on bootstrap so you probably will need your theme to be based on that it if you want the html and css to render nicely.
+Jupyter Notebook is based on bootstrap so you probably will need your theme to be based on that it if you want the html and css to render nicely.
 
-I try to inject only the necessary CSS, removing IPython's bootstrap but fixes are needed in some cases, if you find this issues I recommend looking at how my theme fixes them.
+I try to inject only the necessary CSS, removing Jupyter's bootstrap but fixes are needed in some cases, if you find this issues I recommend looking at how my theme fixes them.
 
 ## Installation
 
