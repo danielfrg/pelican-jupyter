@@ -16,7 +16,7 @@ from pelican.readers import MarkdownReader, HTMLReader, BaseReader
 
 import IPython
 try:
-    # Jupyter  
+    # Jupyter
     from traitlets.config import Config
 except ImportError:
     # IPython < 4.0
