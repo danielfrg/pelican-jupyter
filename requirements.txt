@@ -1,0 +1,6 @@
+pelican>=3.5
+jupyter
+nbconvert>=4.0
+ipython>=4.0
+markdown>=2.6.1
+beautifulsoup4

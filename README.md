@@ -11,6 +11,7 @@ Recommended version of libraries are:
 - `ipython==4.0`
 - `nbconvert==4.0`
 - `markdown==2.6.1`
+- `beautifulsoup4`
 
 There is a good chance the plugin will work correctly with older versions of Pelican and IPython.
 
