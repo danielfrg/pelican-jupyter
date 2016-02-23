@@ -204,6 +204,8 @@ class MyHTMLParser(HTMLReader._HTMLParser):
         self.stop_tags = [('div', ('class', 'input')), ('div', ('class', 'output')), ('h2', ('id', 'Header-2'))]
         if 'IPYNB_STOP_SUMMARY_TAGS' in self.settings.keys():
             self.stop_tags = self.settings['IPYNB_STOP_SUMMARY_TAGS']
+        if 'IPYNB_EXTEND_STOP_SUMMARY_TAGS' in self.settings.keys():
+            self.stop_tags.extend(self.settings['IPYNB_EXTEND_STOP_SUMMARY_TAGS'])
 
     def handle_starttag(self, tag, attrs):
         HTMLReader._HTMLParser.handle_starttag(self, tag, attrs)
