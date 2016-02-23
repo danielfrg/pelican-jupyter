@@ -43,7 +43,7 @@ except:
 from pygments.formatters import HtmlFormatter
 
 
-LATEX_CUSTOM_SCRIPT = '''
+LATEX_CUSTOM_SCRIPT = """
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var mathjaxscript = document.createElement('script');
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
@@ -71,17 +71,29 @@ LATEX_CUSTOM_SCRIPT = '''
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 </script>
-'''
+"""
 
 def register():
+    """
+    Register the new "ipynb" reader
+    """
+    def add_reader(arg):
+        arg.settings["READERS"]["ipynb"] = IPythonNB
     signals.initialized.connect(add_reader)
 
 
-def add_reader(arg):
-    arg.settings['READERS']['ipynb'] = IPythonNB
-
-
 class IPythonNB(BaseReader):
+    """
+    Extend the Pelican.BaseReader to `.ipynb` files can be recognized
+    as a markup language:
+
+    Setup:
+
+    `pelicanconf.py`:
+    ```
+    MARKUP = ('md', 'ipynb')
+    ```
+    """
     enabled = True
     file_extensions = ['ipynb']
 
@@ -109,54 +121,66 @@ class IPythonNB(BaseReader):
                 key = key.lower()
                 metadata[key] = self.process_metadata(key, value)
         metadata['ipython'] = True
-        # Convert ipython notebook to html
-        config = Config({'CSSHTMLHeaderTransformer': {'enabled': True,
-                         'highlight_class': '.highlight-ipynb'}})
-        exporter = HTMLExporter(config=config, template_file='basic',
-                                filters={'highlight2html': custom_highlighter})
 
-        content, info = exporter.from_filename(filepath)
+        content, info = get_html_from_filepath(filepath)
 
-        if BeautifulSoup:
-            soup = BeautifulSoup(content)
-            for i in soup.findAll("div", {"class" : "input"}):
-                if i.findChildren()[1].find(text='#ignore') is not None:
-                    i.extract()
-        else:
-            soup = content
-
-        # Process using Pelican HTMLReader
-        content = '<body>{0}</body>'.format(soup)  # So Pelican HTMLReader works
-        parser = MyHTMLParser(self.settings, filename)
-        parser.feed(content)
-        parser.close()
-        body = parser.body
-        if ('IPYNB_USE_META_SUMMARY' in self.settings.keys() and \
-          self.settings['IPYNB_USE_META_SUMMARY'] == False) or \
-          'IPYNB_USE_META_SUMMARY' not in self.settings.keys():
+        # Generate Summary: Do it before cleaning CSS
+        if 'summary' not in [key.lower() for key in self.settings.keys()]:
+            content = '<body>{0}</body>'.format(content)    # So Pelican HTMLReader works
+            parser = MyHTMLParser(self.settings, filename)
+            parser.feed(content)
+            parser.close()
+            content = parser.body
             metadata['summary'] = parser.summary
 
-        def filter_css(style_text):
-            '''
-            HACK: IPython returns a lot of CSS including its own bootstrap.
-            Get only the IPython Notebook CSS styles.
-            '''
-            index = style_text.find('/*!\n*\n* IPython notebook\n*\n*/')
-            if index > 0:
-                style_text = style_text[index:]
-            index = style_text.find('/*!\n*\n* IPython notebook webapp\n*\n*/')
-            if index > 0:
-                style_text = style_text[:index]
+        content = fix_css(content, info)
+        return content, metadata
 
-            style_text = re.sub(r'color\:\#0+(;)?', '', style_text)
-            style_text = re.sub(r'\.rendered_html[a-z0-9,._ ]*\{[a-z0-9:;%.#\-\s\n]+\}', '', style_text)
 
-            return '<style type=\"text/css\">{0}</style>'.format(style_text)
+def get_html_from_filepath(filepath):
+    """Convert ipython notebook to html
+    Return: html content of the converted notebook
+    """
+    config = Config({'CSSHTMLHeaderTransformer': {'enabled': True,
+                     'highlight_class': '.highlight-ipynb'}})
+    exporter = HTMLExporter(config=config, template_file='basic',
+                            filters={'highlight2html': custom_highlighter})
 
-        ipython_css = '\n'.join(filter_css(css_style) for css_style in info['inlining']['css'])
-        body = ipython_css + body + LATEX_CUSTOM_SCRIPT
+    content, info = exporter.from_filename(filepath)
 
-        return body, metadata
+    if BeautifulSoup:
+        soup = BeautifulSoup(content)
+        for i in soup.findAll("div", {"class" : "input"}):
+            if i.findChildren()[1].find(text='#ignore') is not None:
+                i.extract()
+        content = soup
+
+    return content, info
+
+
+def fix_css(content, info):
+    """
+    General fixes for the notebook generated html
+    """
+    def filter_css(style_text):
+        """
+        HACK: IPython returns a lot of CSS including its own bootstrap.
+        Get only the IPython Notebook CSS styles.
+        """
+        index = style_text.find('/*!\n*\n* IPython notebook\n*\n*/')
+        if index > 0:
+            style_text = style_text[index:]
+        index = style_text.find('/*!\n*\n* IPython notebook webapp\n*\n*/')
+        if index > 0:
+            style_text = style_text[:index]
+
+        style_text = re.sub(r'color\:\#0+(;)?', '', style_text)
+        style_text = re.sub(r'\.rendered_html[a-z0-9,._ ]*\{[a-z0-9:;%.#\-\s\n]+\}', '', style_text)
+        return '<style type=\"text/css\">{0}</style>'.format(style_text)
+
+    ipython_css = '\n'.join(filter_css(css_style) for css_style in info['inlining']['css'])
+    content = ipython_css + content + LATEX_CUSTOM_SCRIPT
+    return content
 
 
 class MyHTMLParser(HTMLReader._HTMLParser):
@@ -172,15 +196,14 @@ class MyHTMLParser(HTMLReader._HTMLParser):
     """
     def __init__(self, settings, filename):
         HTMLReader._HTMLParser.__init__(self, settings, filename)
+        self.settings = settings
+        self.filename = filename
         self.wordcount = 0
         self.summary = None
 
-        self.stop_tags = [('div', ('class', 'input')), ('div', ('class', 'output'))]
+        self.stop_tags = [('div', ('class', 'input')), ('div', ('class', 'output')), ('h2', ('id', 'Header-2'))]
         if 'IPYNB_STOP_SUMMARY_TAGS' in self.settings.keys():
             self.stop_tags = self.settings['IPYNB_STOP_SUMMARY_TAGS']
-        if 'IPYNB_EXTEND_STOP_SUMMARY_TAGS' in self.settings.keys():
-            self.stop_tags.extend(self.settings['IPYNB_EXTEND_STOP_SUMMARY_TAGS'])
-
 
     def handle_starttag(self, tag, attrs):
         HTMLReader._HTMLParser.handle_starttag(self, tag, attrs)
@@ -201,6 +224,10 @@ class MyHTMLParser(HTMLReader._HTMLParser):
 
 
 def strip_tags(html):
+    """
+    Strip html tags from html content (str)
+    Useful for summary creation
+    """
     s = HTMLTagStripper()
     s.feed(html)
     return s.get_data()
@@ -223,15 +250,17 @@ class HTMLTagStripper(HTMLParser):
         return ''.join(self.fed)
 
 
-def custom_highlighter(source, language='ipython', metadata=None):
+def custom_highlighter(source, language='python', metadata=None):
     """
     Makes the syntax highlighting from pygments have prefix(`highlight-ipynb`)
     So it doesn't break the theme pygments
 
-    It modifies both css prefixes and html tags
+    This modifies both css prefixes and html tags
+
+    Returns new html content
     """
     if not language:
-        language = 'ipython'
+        language = 'python'
 
     formatter = HtmlFormatter(cssclass='highlight-ipynb')
     output = _pygments_highlight(source, formatter, language, metadata)
