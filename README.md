@@ -111,6 +111,9 @@ Edit this the `metadata` tag to have the required markdown metadata:
 
 ## Mode B: Liquid Tags
 
+Install the [liquid_tags plugin](https://github.com/getpelican/pelican-plugins/tree/master/liquid_tags).
+Only the base `liquid_tags.py` and `mdx_liquid_tags.py` files are needed.
+
 In the `pelicanconf.py`:
 ```
 MARKUP = ('md', )
