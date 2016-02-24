@@ -148,7 +148,8 @@ So you end up writing two files, one `.md` with some text content
 and the `.ipynb` with the code/plots/equations that makes it a little bit annoying but can
 be useful in some cases.
 
-At the moment you cannot install both modes.
+You can use both modes at the same time but you are probably going to see a exception that
+prevents conflicts, ignore it.
 
 ## Note on CSS
 
