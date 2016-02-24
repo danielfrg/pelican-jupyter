@@ -42,13 +42,14 @@ class IPythonNB(BaseReader):
 
     def read(self, filepath):
         metadata = {}
+        metadata['ipython'] = True
 
         # Files
         filedir = os.path.dirname(filepath)
         filename = os.path.basename(filepath)
         metadata_filename = filename.split('.')[0] + '.ipynb-meta'
         metadata_filepath = os.path.join(filedir, metadata_filename)
-        # Load metadata
+
         if os.path.exists(metadata_filepath):
             # Metadata is on a external file, process using Pelican MD Reader
             md_reader = MarkdownReader(self.settings)
@@ -63,7 +64,17 @@ class IPythonNB(BaseReader):
                 key = key.lower()
                 if key in ("title", "date", "category", "tags", "slug", "author"):
                     metadata[key] = self.process_metadata(key, value)
-        metadata['ipython'] = True
+
+        keys = [k.lower() for k in metadata.keys()]
+        if not set(['title', 'date', 'slug']).issubset(set(keys)):
+            # Probably using ipynb.liquid mode
+            md_filename = filename.split('.')[0] + '.md'
+            md_filepath = os.path.join(filedir, md_filename)
+            if not os.path.exists(md_filepath):
+                raise Exception("Could not find metadata in `.ipynb-meta`, inside `.ipynb` or external `.md` file.")
+            else:
+                raise Exception("Could not find metadata in `.ipynb-meta` or inside `.ipynb` but found `.md` file, "
+                      "assuming that this notebook is for liquid tag usage if true ignore this error")
 
         content, info = get_html_from_filepath(filepath)
 

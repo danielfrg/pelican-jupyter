@@ -12,6 +12,6 @@ MARKUP = ('md', )
 
 # PLUGINS SETTINGS
 PLUGIN_PATHS = ['../../../../plugins']
-PLUGINS = ['ipynb.liquid']
+PLUGINS = ['ipynb.markup', 'ipynb.liquid']
 
 THEME = 'theme'
