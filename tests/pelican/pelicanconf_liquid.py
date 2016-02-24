@@ -8,8 +8,10 @@ SITENAME = u'ipynb-test'
 TIMEZONE = 'UTC'
 DEFAULT_LANG = 'en'
 
-MARKUP = ('md')
+MARKUP = ('md', )
 
 # PLUGINS SETTINGS
-PLUGIN_PATHS = ['../../../']
+PLUGIN_PATHS = ['../../../../plugins']
 PLUGINS = ['ipynb.liquid']
+
+THEME = 'theme'

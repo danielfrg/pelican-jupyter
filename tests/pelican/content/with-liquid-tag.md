@@ -4,4 +4,4 @@ Date: 2100-12-31
 Tags: Test
 Author: Daniel Rodriguez
 
-{% notebook ~/workspace/blog/plugins/ipynb/tests/pelican/content/with-liquid-tag.ipynb %}
+{% notebook with-liquid-tag.ipynb %}

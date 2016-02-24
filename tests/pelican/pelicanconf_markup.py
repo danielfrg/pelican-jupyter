@@ -11,5 +11,7 @@ DEFAULT_LANG = 'en'
 MARKUP = ('md', 'ipynb')
 
 # PLUGINS SETTINGS
-PLUGIN_PATHS = ['../../']
-PLUGINS = ['ipynb']
+PLUGIN_PATHS = ['../../../../plugins']
+PLUGINS = ['ipynb.markup']
+
+THEME = 'theme'
