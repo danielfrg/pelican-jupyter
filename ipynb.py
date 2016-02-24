@@ -113,13 +113,13 @@ class IPythonNB(BaseReader):
         else:
             # Load metadata from ipython notebook file
             ipynb_file = open(filepath)
-            metadata = json.load(ipynb_file)['metadata']
+            notebook_metadata = json.load(ipynb_file)['metadata']
 
-            # Fix metadata to pelican standards
-            for key, value in metadata.items():
-                del metadata[key]
+            # Change to standard pelican metadata
+            for key, value in notebook_metadata.items():
                 key = key.lower()
-                metadata[key] = self.process_metadata(key, value)
+                if key in ("title", "date", "category", "tags", "slug", "author"):
+                    metadata[key] = self.process_metadata(key, value)
         metadata['ipython'] = True
 
         content, info = get_html_from_filepath(filepath)
