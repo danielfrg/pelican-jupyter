@@ -82,7 +82,12 @@ class IPythonNB(BaseReader):
         if 'summary' not in [key.lower() for key in self.settings.keys()]:
             content = '<body>{0}</body>'.format(content)    # So Pelican HTMLReader works
             parser = MyHTMLParser(self.settings, filename)
-            parser.feed(content.decode("utf-8"))
+            # Python 3 str don't have decode
+            try:
+                c = content.decode("utf-8")
+            except AttributeError as e:
+                c = content
+            parser.feed(c)
             parser.close()
             content = parser.body
             metadata['summary'] = parser.summary
