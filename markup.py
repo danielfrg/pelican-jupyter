@@ -66,7 +66,7 @@ class IPythonNB(BaseReader):
                     metadata[key] = self.process_metadata(key, value)
 
         keys = [k.lower() for k in metadata.keys()]
-        if not set(['title', 'date', 'slug']).issubset(set(keys)):
+        if not set(['title', 'date']).issubset(set(keys)):
             # Probably using ipynb.liquid mode
             md_filename = filename.split('.')[0] + '.md'
             md_filepath = os.path.join(filedir, md_filename)
