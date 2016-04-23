@@ -80,7 +80,7 @@ class IPythonNB(BaseReader):
 
         # Generate Summary: Do it before cleaning CSS
         if 'summary' not in [key.lower() for key in self.settings.keys()]:
-            content = '<body>{0}</body>'.format(content)    # So Pelican HTMLReader works
+            content = '<body>{0}</body>'.format(content.encode("utf-8"))    # So Pelican HTMLReader works
             parser = MyHTMLParser(self.settings, filename)
             if hasattr(content, 'decode'): # PY2
                 content = content.decode("utf-8")
