@@ -87,7 +87,10 @@ class IPythonNB(BaseReader):
             parser.feed(content)
             parser.close()
             content = parser.body
-            metadata['summary'] = parser.summary
+            if ('IPYNB_USE_META_SUMMARY' in self.settings.keys() and \
+              self.settings['IPYNB_USE_META_SUMMARY'] == False) or \
+              'IPYNB_USE_META_SUMMARY' not in self.settings.keys():
+                metadata['summary'] = parser.summary
 
         content = fix_css(content, info)
         return content, metadata
