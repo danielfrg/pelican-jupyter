@@ -14,12 +14,7 @@ from traitlets.config import Config
 import nbconvert
 from nbconvert.exporters import HTMLExporter
 from nbconvert.filters.highlight import _pygments_highlight
-
-try:
-    from bs4 import BeautifulSoup
-except:
-    BeautifulSoup = None
-
+from bs4 import BeautifulSoup
 from pygments.formatters import HtmlFormatter
 
 LATEX_CUSTOM_SCRIPT = """
@@ -41,12 +36,11 @@ def get_html_from_filepath(filepath):
 
     content, info = exporter.from_filename(filepath)
 
-    if BeautifulSoup:
-        soup = BeautifulSoup(content,"html.parser")
-        for i in soup.findAll("div", {"class" : "input"}):
-            if i.findChildren()[1].find(text='#ignore') is not None:
-                i.extract()
-        content = soup.decode(formatter=None)
+    soup = BeautifulSoup(content, "html.parser")
+    for i in soup.findAll("div", {"class": "input"}):
+        if i.findChildren()[1].find(text='#ignore') is not None:
+            i.extract()
+    content = soup.decode(formatter=None)
 
     return content, info
 
