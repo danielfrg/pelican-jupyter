@@ -7,7 +7,7 @@ from __future__ import absolute_import, print_function, division
 import os
 import re
 import json
-
+from nbconvert import filters
 
 import IPython
 try:
@@ -78,6 +78,7 @@ def get_html_from_filepath(filepath):
                      'highlight_class': '.highlight-ipynb'}})
     exporter = HTMLExporter(config=config, template_file='basic',
                             filters={'highlight2html': custom_highlighter})
+    exporter.register_filter('markdown2html', filters.markdown2html_pandoc)
 
     content, info = exporter.from_filename(filepath)
 
