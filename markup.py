@@ -80,13 +80,12 @@ class IPythonNB(BaseReader):
 
         # Generate Summary: Do it before cleaning CSS
         if 'summary' not in [key.lower() for key in self.settings.keys()]:
-            content = '<body>{0}</body>'.format(content.encode("utf-8"))    # So Pelican HTMLReader works
             parser = MyHTMLParser(self.settings, filename)
-            if hasattr(content, 'decode'): # PY2
-                content = content.decode("utf-8")
+            parser.feed('<body>')
             parser.feed(content)
+            parser.feed('</body>')
             parser.close()
-            content = parser.body
+
             if ('IPYNB_USE_META_SUMMARY' in self.settings.keys() and \
               self.settings['IPYNB_USE_META_SUMMARY'] == False) or \
               'IPYNB_USE_META_SUMMARY' not in self.settings.keys():
