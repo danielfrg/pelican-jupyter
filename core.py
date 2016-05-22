@@ -10,26 +10,10 @@ import json
 from nbconvert import filters
 
 import IPython
-try:
-    # Jupyter
-    from traitlets.config import Config
-except ImportError:
-    # IPython < 4.0
-    from IPython.config import Config
-
-try:
-    # Jupyter
-    import nbconvert
-except ImportError:
-    # IPython < 4.0
-    import IPython.nbconvert as nbconvert
-
+from traitlets.config import Config
+import nbconvert
 from nbconvert.exporters import HTMLExporter
-try:
-    from nbconvert.filters.highlight import _pygment_highlight
-except ImportError:
-    # IPython < 2.0
-    from nbconvert.filters.highlight import _pygments_highlight
+from nbconvert.filters.highlight import _pygments_highlight
 
 try:
     from bs4 import BeautifulSoup
