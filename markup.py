@@ -13,7 +13,7 @@ except ImportError:
 from pelican import signals
 from pelican.readers import MarkdownReader, HTMLReader, BaseReader
 
-from .ipynb import get_html_from_filepath, fix_css
+from .ipynb import get_html_from_filepath
 
 
 def register():
@@ -92,7 +92,6 @@ class IPythonNB(BaseReader):
                             'IPYNB_USE_META_SUMMARY' not in self.settings.keys():
                 metadata['summary'] = parser.summary
 
-        content = fix_css(content, info)
         return content, metadata
 
 
