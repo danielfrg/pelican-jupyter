@@ -12,12 +12,6 @@ from nbconvert.filters.highlight import _pygments_highlight
 from bs4 import BeautifulSoup
 from pygments.formatters import HtmlFormatter
 
-LATEX_CUSTOM_SCRIPT = """
-<script type="text/javascript" async
-  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-"""
-
 
 def get_html_from_filepath(filepath):
     """Convert ipython notebook to html
@@ -61,7 +55,7 @@ def fix_css(content, info):
         return '<style type=\"text/css\">{0}</style>'.format(style_text)
 
     ipython_css = '\n'.join(filter_css(css_style) for css_style in info['inlining']['css'])
-    content = ipython_css + content + LATEX_CUSTOM_SCRIPT
+    content = ipython_css + content
     return content
 
 
