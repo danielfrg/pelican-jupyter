@@ -9,6 +9,7 @@ from .core import get_html_from_filepath, fix_css
 SYNTAX = "{% notebook ~/absolute/path/to/notebook.ipynb %}"
 FORMAT = re.compile(r"""^(\s+)?(?P<src>\S+)(\s+)?((cells\[)(?P<start>-?[0-9]*):(?P<end>-?[0-9]*)(\]))?(\s+)?((language\[)(?P<language>-?[a-z0-9\+\-]*)(\]))?(\s+)?$""")
 
+
 @LiquidTags.register('notebook')
 def notebook(preprocessor, tag, markup):
     match = FORMAT.search(markup)

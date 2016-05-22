@@ -4,14 +4,9 @@ Plus some utilities
 """
 from __future__ import absolute_import, print_function, division
 
-import os
 import re
-import json
 from nbconvert import filters
-
-import IPython
 from traitlets.config import Config
-import nbconvert
 from nbconvert.exporters import HTMLExporter
 from nbconvert.filters.highlight import _pygments_highlight
 from bs4 import BeautifulSoup
@@ -61,7 +56,7 @@ def fix_css(content, info):
         if index > 0:
             style_text = style_text[:index]
 
-        style_text = re.sub(r'color\:\#0+(;)?', '', style_text)
+        style_text = re.sub(r'color:#0+(;)?', '', style_text)
         style_text = re.sub(r'\.rendered_html[a-z0-9,._ ]*\{[a-z0-9:;%.#\-\s\n]+\}', '', style_text)
         return '<style type=\"text/css\">{0}</style>'.format(style_text)
 
