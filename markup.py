@@ -13,15 +13,17 @@ except ImportError:
 from pelican import signals
 from pelican.readers import MarkdownReader, HTMLReader, BaseReader
 
-from .ipynb import get_html_from_filepath, fix_css
+from .ipynb import get_html_from_filepath
 
 
 def register():
     """
     Register the new "ipynb" reader
     """
+
     def add_reader(arg):
         arg.settings["READERS"]["ipynb"] = IPythonNB
+
     signals.initialized.connect(add_reader)
 
 
@@ -41,8 +43,7 @@ class IPythonNB(BaseReader):
     file_extensions = ['ipynb']
 
     def read(self, filepath):
-        metadata = {}
-        metadata['ipython'] = True
+        metadata = {'ipython': True}
 
         # Files
         filedir = os.path.dirname(filepath)
@@ -66,7 +67,7 @@ class IPythonNB(BaseReader):
                     metadata[key] = self.process_metadata(key, value)
 
         keys = [k.lower() for k in metadata.keys()]
-        if not set(['title', 'date']).issubset(set(keys)):
+        if not {'title', 'date'}.issubset(set(keys)):
             # Probably using ipynb.liquid mode
             md_filename = filename.split('.')[0] + '.md'
             md_filepath = os.path.join(filedir, md_filename)
@@ -74,25 +75,23 @@ class IPythonNB(BaseReader):
                 raise Exception("Could not find metadata in `.ipynb-meta`, inside `.ipynb` or external `.md` file.")
             else:
                 raise Exception("Could not find metadata in `.ipynb-meta` or inside `.ipynb` but found `.md` file, "
-                      "assuming that this notebook is for liquid tag usage if true ignore this error")
+                                "assuming that this notebook is for liquid tag usage if true ignore this error")
 
         content, info = get_html_from_filepath(filepath)
 
         # Generate Summary: Do it before cleaning CSS
         if 'summary' not in [key.lower() for key in self.settings.keys()]:
-            content = '<body>{0}</body>'.format(content.encode("utf-8"))    # So Pelican HTMLReader works
             parser = MyHTMLParser(self.settings, filename)
-            if hasattr(content, 'decode'): # PY2
-                content = content.decode("utf-8")
+            parser.feed('<body>')
             parser.feed(content)
+            parser.feed('</body>')
             parser.close()
-            content = parser.body
-            if ('IPYNB_USE_META_SUMMARY' in self.settings.keys() and \
-              self.settings['IPYNB_USE_META_SUMMARY'] == False) or \
-              'IPYNB_USE_META_SUMMARY' not in self.settings.keys():
+
+            if ('IPYNB_USE_META_SUMMARY' in self.settings.keys() and
+                        self.settings['IPYNB_USE_META_SUMMARY'] == False) or \
+                            'IPYNB_USE_META_SUMMARY' not in self.settings.keys():
                 metadata['summary'] = parser.summary
 
-        content = fix_css(content, info)
         return content, metadata
 
 
@@ -107,6 +106,7 @@ class MyHTMLParser(HTMLReader._HTMLParser):
     The downside is that the summary length is not exactly the specified, it stops at
     completed div/p/li/etc tags.
     """
+
     def __init__(self, settings, filename):
         HTMLReader._HTMLParser.__init__(self, settings, filename)
         self.settings = settings
@@ -153,6 +153,7 @@ class HTMLTagStripper(HTMLParser):
     Custom HTML Parser to strip HTML tags
     Useful for summary creation
     """
+
     def __init__(self):
         HTMLParser.__init__(self)
         self.reset()

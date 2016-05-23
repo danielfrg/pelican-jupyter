@@ -11,11 +11,11 @@ included in a regular post using Markdown (`.md`) files.
 Python 2.7 and 3.4 are supported
 
 The main objective is to run with the latest version of Jupyter/IPython
-but there is a good chance the plugin will work correctly with older versions of Pelican and Jupyter/IPython.
+but there is a good chance the plugin will work correctly with older versions of Pelican.
 The recommended version of libraries are:
 
 - `pelican>=3.5`
-- `jupyter>=1.0`
+- `jupyter>=4.0`
 - `ipython>=4.0`
 - `nbconvert>=4.0`
 - `beautifulsoup4`
@@ -33,7 +33,6 @@ plugins
     __init__.py
     core.py
     ipynb.py
-    liquid.py
     markup.py
     ... other files are optional ...
 ```
@@ -46,7 +45,7 @@ If you host your site on git (i.e. github pages) you could use it as a submodule
 git submodule add git://github.com/danielfrg/pelican-ipynb.git plugins/ipynb
 ```
 
-## Mode A: Markup Mode
+## Markup Mode
 
 In the `pelicanconf.py`:
 ```
@@ -108,48 +107,6 @@ Edit this the `metadata` tag to have the required markdown metadata:
     },
     { A_LOT_OF_OTHER_STUFF }
 ```
-
-## Mode B: Liquid Tags
-
-Install the [liquid_tags plugin](https://github.com/getpelican/pelican-plugins/tree/master/liquid_tags).
-Only the base `liquid_tags.py` and `mdx_liquid_tags.py` files are needed.
-
-In the `pelicanconf.py`:
-```
-MARKUP = ('md', )
-
-PLUGIN_PATH = './plugins'
-PLUGINS = ['ipynb.liquid']
-```
-
-After this you can use a liquid tag to include a notebook in any regular markdown article,
-for example `mypost.md`:
-
-```
-Title:
-Slug:
-Date:
-Category:
-Tags:
-Author:
-Summary:
-
-{% notebook path/from/content/dir/to/notebook.ipynb %}
-
-```
-
-## Recommend mode?
-
-The only problem with the liquid tag mode is that it doesn't generate a summary for the article
-automatically from the notebook so you have to write it in the `.md` file that includes
-the notebook liquid tag.
-
-So you end up writing two files, one `.md` with some text content
-and the `.ipynb` with the code/plots/equations that makes it a little bit annoying but can
-be useful in some cases.
-
-You can use both modes at the same time but you are probably going to see a exception that
-prevents conflicts, ignore it.
 
 ## Note on CSS
 
