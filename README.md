@@ -178,3 +178,4 @@ On the `pelicanconf.py` you can set:
 when the summary creation should stop, this is usefull to generate valid/shorter summaries.
 `default = [('div', ('class', 'input')), ('div', ('class', 'output'))]`
 - `IPYNB_EXTEND_STOP_SUMMARY_TAGS`: list of tuples to extend the default `IPYNB_STOP_SUMMARY_TAGS`
+- `IGNORE_FILES = ['.ipynb_checkpoints']`: prevents pelican from trying to parse notebook checkpoint files
