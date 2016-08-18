@@ -94,7 +94,8 @@ class IPythonNB(BaseReader):
               'IPYNB_USE_META_SUMMARY' not in self.settings.keys():
                 metadata['summary'] = parser.summary
 
-        content = fix_css(content, info)
+        ignore_css = True if 'IPYNB_IGNORE_CSS' in self.settings.keys() else False
+        content = fix_css(content, info, ignore_css=ignore_css)
         return content, metadata
 
 

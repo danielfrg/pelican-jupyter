@@ -1,13 +1,9 @@
 """
-Core module that handles the conversion from notebook to HTML
-Plus some utilities
+Core module that handles the conversion from notebook to HTML plus some utilities
 """
 from __future__ import absolute_import, print_function, division
 
-import os
 import re
-import json
-
 
 import IPython
 try:
@@ -91,7 +87,7 @@ def get_html_from_filepath(filepath):
     return content, info
 
 
-def fix_css(content, info):
+def fix_css(content, info, ignore_css=False):
     """
     General fixes for the notebook generated html
     """
@@ -111,8 +107,11 @@ def fix_css(content, info):
         style_text = re.sub(r'\.rendered_html[a-z0-9,._ ]*\{[a-z0-9:;%.#\-\s\n]+\}', '', style_text)
         return '<style type=\"text/css\">{0}</style>'.format(style_text)
 
-    ipython_css = '\n'.join(filter_css(css_style) for css_style in info['inlining']['css'])
-    content = ipython_css + content + LATEX_CUSTOM_SCRIPT
+    if ignore_css:
+        content = content + LATEX_CUSTOM_SCRIPT
+    else:
+        ipython_css = '\n'.join(filter_css(css_style) for css_style in info['inlining']['css'])
+        content = ipython_css + content + LATEX_CUSTOM_SCRIPT
     return content
 
 
