@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function, division
+from __future__ import absolute_import, print_function, unicode_literals
 
 import os
 import json
@@ -85,6 +85,7 @@ class IPythonNB(BaseReader):
                 content = '<body>{0}</body>'.format(content.encode("utf-8"))    # So Pelican HTMLReader works
                 content = content.decode("utf-8")
             else:
+                # Content already decoded
                 content = '<body>{0}</body>'.format(content)
             parser.feed(content)
             parser.close()
