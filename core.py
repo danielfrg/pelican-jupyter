@@ -75,6 +75,7 @@ def get_html_from_filepath(filepath):
     exporter = HTMLExporter(config=config, template_file='basic',
                             filters={'highlight2html': custom_highlighter})
 
+    config.CSSHTMLHeaderPreprocessor.highlight_class = " .highlight pre "
     content, info = exporter.from_filename(filepath)
 
     if BeautifulSoup:
