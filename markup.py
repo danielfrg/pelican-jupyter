@@ -2,6 +2,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import os
 import json
+from jinja2 import Template
 
 try:
     # Py3k
@@ -76,17 +77,14 @@ class IPythonNB(BaseReader):
                 raise Exception("Could not find metadata in `.ipynb-meta` or inside `.ipynb` but found `.md` file, "
                       "assuming that this notebook is for liquid tag usage if true ignore this error")
 
-        content, info = get_html_from_filepath(filepath)
+        content, info = get_html_from_filepath(filepath, self.settings)
 
         # Generate Summary: Do it before cleaning CSS
         if 'summary' not in [key.lower() for key in self.settings.keys()]:
             parser = MyHTMLParser(self.settings, filename)
-            if hasattr(content, 'decode'): # PY2
-                content = '<body>{0}</body>'.format(content.encode("utf-8"))    # So Pelican HTMLReader works
-                content = content.decode("utf-8")
-            else:
-                # Content already decoded
-                content = '<body>{0}</body>'.format(content)
+            # Delegate unicode handling to jinja.
+            _t = Template("<body>{{content}}</body>")
+            content = _t.render(content=content)
             parser.feed(content)
             parser.close()
             content = parser.body
