@@ -179,3 +179,8 @@ when the summary creation should stop, this is usefull to generate valid/shorter
 `default = [('div', ('class', 'input')), ('div', ('class', 'output'))]`
 - `IPYNB_EXTEND_STOP_SUMMARY_TAGS`: list of tuples to extend the default `IPYNB_STOP_SUMMARY_TAGS`
 - `IGNORE_FILES = ['.ipynb_checkpoints']`: prevents pelican from trying to parse notebook checkpoint files
+- `IPYTHON_TEMPLATE_PATH`: Path to the custom ipython templates. If you want to customize the default jinja template
+  to be used to export the ipython notebook, you can extend the default templates. `article.tpl` is the default name
+  for custom template, or you can even give ariticle specific template by
+  nameing the template after the `<article-name>.tpl>`. If any of above are not
+  set then plugin will pick the default `basic.tpl`.

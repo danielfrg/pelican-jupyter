@@ -21,6 +21,7 @@ except ImportError:
     import IPython.nbconvert as nbconvert
 
 from nbconvert.exporters import HTMLExporter
+from .TemplateExporter import TemplateExporter
 try:
     from nbconvert.filters.highlight import _pygment_highlight
 except ImportError:
@@ -66,14 +67,19 @@ LATEX_CUSTOM_SCRIPT = """
 """
 
 
-def get_html_from_filepath(filepath):
+def get_html_from_filepath(filepath, pelican_settings):
     """Convert ipython notebook to html
     Return: html content of the converted notebook
     """
     config = Config({'CSSHTMLHeaderTransformer': {'enabled': True,
                      'highlight_class': '.highlight-ipynb'}})
-    exporter = HTMLExporter(config=config, template_file='basic',
-                            filters={'highlight2html': custom_highlighter})
+
+    exporter = TemplateExporter(filepath, pelican_settings,
+                                config=config,
+                                filters={'highlight2html': custom_highlighter})
+
+    #exporter = HTMLExporter(config=config, template_file="basic",
+    #                        filters={'highlight2html': custom_highlighter})
 
     content, info = exporter.from_filename(filepath)
 
