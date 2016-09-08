@@ -51,7 +51,8 @@ class IPythonNB(BaseReader):
         metadata_filepath = os.path.join(filedir, metadata_filename)
 
         if os.path.exists(metadata_filepath):
-            # Metadata is on a external file, process using Pelican MD Reader
+            # Metadata is on a external file, 
+            # process using Pelican MD Reader
             md_reader = MarkdownReader(self.settings)
             _content, metadata = md_reader.read(metadata_filepath)
         else:
@@ -65,6 +66,8 @@ class IPythonNB(BaseReader):
                 if key in ("title", "date", "category", "tags", "slug", "author"):
                     metadata[key] = self.process_metadata(key, value)
 
+        if 'summary' not in self.settings:
+            self.settings['summary'] = metadata['summary']
         keys = [k.lower() for k in metadata.keys()]
         if not set(['title', 'date']).issubset(set(keys)):
             # Probably using ipynb.liquid mode
