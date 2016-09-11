@@ -74,12 +74,11 @@ def get_html_from_filepath(filepath):
                      'highlight_class': '.highlight-ipynb'}})
     exporter = HTMLExporter(config=config, template_file='basic',
                             filters={'highlight2html': custom_highlighter})
-
     content, info = exporter.from_filename(filepath)
 
     if BeautifulSoup:
-        soup = BeautifulSoup(content,"html.parser")
-        for i in soup.findAll("div", {"class" : "input"}):
+        soup = BeautifulSoup(content, 'html.parser')
+        for i in soup.findAll('div', {'class': 'input'}):
             if i.findChildren()[1].find(text='#ignore') is not None:
                 i.extract()
         content = soup.decode(formatter=None)
