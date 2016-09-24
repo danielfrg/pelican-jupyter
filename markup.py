@@ -2,6 +2,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import os
 import json
+import six
 
 try:
     # Py3k
@@ -82,9 +83,9 @@ class IPythonNB(BaseReader):
         # Generate Summary: Do it before cleaning CSS
         if 'summary' not in [key.lower() for key in self.settings.keys()]:
             parser = MyHTMLParser(self.settings, filename)
-            if hasattr(content, 'decode'): # PY2
-                content = '<body>{0}</body>'.format(content.encode("utf-8"))    # So Pelican HTMLReader works
-                content = content.decode("utf-8")
+            if isinstance(content, six.binary_type): # PY2 (str) or PY3 (bytes) to PY2 (unicode) or PY3 (str)
+                # unicode_literals makes format() try to decode as ASCII. Enforce decoding as UTF-8.
+                content = '<body>{0}</body>'.format(content.decode("utf-8"))
             else:
                 # Content already decoded
                 content = '<body>{0}</body>'.format(content)
