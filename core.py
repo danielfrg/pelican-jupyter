@@ -9,9 +9,18 @@ import IPython
 try:
     # Jupyter
     from traitlets.config import Config
+    from traitlets import Integer
 except ImportError:
     # IPython < 4.0
     from IPython.config import Config
+    from IPython.utils.traitlets import Integer
+
+try:
+    # Jupyter
+    from nbconvert.preprocessors import Preprocessor
+except ImportError:
+    # IPython < 4.0
+    from IPython.nbconvert.preprocessors import Preprocessor
 
 try:
     # Jupyter
@@ -33,6 +42,8 @@ except:
     BeautifulSoup = None
 
 from pygments.formatters import HtmlFormatter
+
+from copy import deepcopy
 
 
 LATEX_CUSTOM_SCRIPT = """
@@ -66,14 +77,16 @@ LATEX_CUSTOM_SCRIPT = """
 """
 
 
-def get_html_from_filepath(filepath):
+def get_html_from_filepath(filepath, start=0, end=None):
     """Convert ipython notebook to html
     Return: html content of the converted notebook
     """
     config = Config({'CSSHTMLHeaderTransformer': {'enabled': True,
-                     'highlight_class': '.highlight-ipynb'}})
+                     'highlight_class': '.highlight-ipynb'},
+                     'SubCell': {'enabled':True, 'start':start, 'end':end}})
     exporter = HTMLExporter(config=config, template_file='basic',
-                            filters={'highlight2html': custom_highlighter})
+                            filters={'highlight2html': custom_highlighter},
+                            preprocessors=[SubCell])
     content, info = exporter.from_filename(filepath)
 
     if BeautifulSoup:
@@ -130,3 +143,27 @@ def custom_highlighter(source, language='python', metadata=None):
     output = _pygments_highlight(source, formatter, language, metadata)
     output = output.replace('<pre>', '<pre class="ipynb">')
     return output
+
+#----------------------------------------------------------------------
+# Create a preprocessor to slice notebook by cells
+
+class SliceIndex(Integer):
+    """An integer trait that accepts None"""
+    default_value = None
+
+    def validate(self, obj, value):
+        if value is None:
+            return value
+        else:
+            return super(SliceIndex, self).validate(obj, value)
+
+
+class SubCell(Preprocessor):
+    """A preprocessor to select a slice of the cells of a notebook"""
+    start = SliceIndex(0, config=True, help="first cell of notebook")
+    end = SliceIndex(None, config=True, help="last cell of notebook")
+
+    def preprocess(self, nb, resources):
+        nbc = deepcopy(nb)
+        nbc.cells = nbc.cells[self.start:self.end]
+        return nbc, resources
