@@ -52,7 +52,7 @@ In the `pelicanconf.py`:
 ```
 MARKUP = ('md', 'ipynb')
 
-PLUGIN_PATH = './plugins'
+PLUGIN_PATH = ['./plugins']
 PLUGINS = ['ipynb.markup']
 ```
 
@@ -118,7 +118,7 @@ In the `pelicanconf.py`:
 ```
 MARKUP = ('md', )
 
-PLUGIN_PATH = './plugins'
+PLUGIN_PATH = ['./plugins']
 PLUGINS = ['ipynb.liquid']
 ```
 
