@@ -48,7 +48,7 @@ class IPythonNB(BaseReader):
         # Files
         filedir = os.path.dirname(filepath)
         filename = os.path.basename(filepath)
-        metadata_filename = filename.split('.')[0] + '.ipynb-meta'
+        metadata_filename = os.path.splitext(filename)[0] + '.ipynb-meta'
         metadata_filepath = os.path.join(filedir, metadata_filename)
 
         if os.path.exists(metadata_filepath):
