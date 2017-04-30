@@ -110,14 +110,14 @@ Edit this the `metadata` tag to have the required markdown metadata:
     { A_LOT_OF_OTHER_STUFF }
 ```
 
-Additional meta-tags can be placed inside an `"extras"` object inside the `metadata`, which can be accessed directly inside the pelican themes.
+Additional meta-tags can be placed inside an `"Extras"` object inside the `metadata`, which can be accessed directly inside the pelican themes.
 
 ```
 {
  "metadata": {
         "name": "My notebook",
         "Title": "Notebook using internal metadata",
-        "extras": {
+        "Extras": {
            "Modified": "2017-04-30 08:58"
         }
         
