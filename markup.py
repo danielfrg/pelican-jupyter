@@ -66,6 +66,11 @@ class IPythonNB(BaseReader):
                 key = key.lower()
                 if key in ("title", "date", "category", "tags", "slug", "author"):
                     metadata[key] = self.process_metadata(key, value)
+                if key = "extras" and type(key) is dict:
+                    metadata["extras"] = {};
+                    for extras_key in value:
+                        metadata["extras"][extras_key] = self.process_metadata(extras_key, value)
+                        
 
         keys = [k.lower() for k in metadata.keys()]
         if not set(['title', 'date']).issubset(set(keys)):
