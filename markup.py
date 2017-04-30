@@ -61,17 +61,17 @@ class IPythonNB(BaseReader):
             ipynb_file = open(filepath)
             notebook_metadata = json.load(ipynb_file)['metadata']
 
-            additional_metatags = notebook_metadata['additional_tags'] if 'additional_tags' in notebook_metadata else []
+            ADDITIONAL_TAGS = 'additional_tags'
+            original_tags = ("title", "date", "category", "tags", "slug", "author", "status")
+            additional_metatags = notebook_metadata[ADDITIONAL_TAGS] if ADDITIONAL_TAGS in notebook_metadata else ()
             
+            metatags = set(original_tags + tuple(additional_metatags))
+
             # Change to standard pelican metadata
             for key, value in notebook_metadata.items():
                 key = key.lower()
-                if key in ("title", "date", "category", "tags", "slug", "author", "status"):
+                if key in metatags:
                     metadata[key] = self.process_metadata(key, value)
-                for additional_key in additional_metatags:
-                    additional_key = additional_key.lower()
-                    if key == additional_key:
-                        metadata[key] = self.process_metadata(additional_key, value)
                         
 
         keys = [k.lower() for k in metadata.keys()]
