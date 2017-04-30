@@ -110,16 +110,20 @@ Edit this the `metadata` tag to have the required markdown metadata:
     { A_LOT_OF_OTHER_STUFF }
 ```
 
-Additional meta-tags can be placed inside an `"Extras"` object inside the `metadata`, which can be accessed directly inside the pelican themes.
+By default, the following keys can are read inside the metadata object:
+```
+"Title", "Date", "Category", "Tags", "Slug", "Author", "Status"
+```
+
+Additional meta-tag names can be placed inside an `"additional_tags"` list inside the `metadata` object in order to expand the above list. additional keys can be accessed directly inside the pelican themes.
 
 ```
 {
  "metadata": {
         "name": "My notebook",
         "Title": "Notebook using internal metadata",
-        "Extras": {
-           "Modified": "2017-04-30 08:58"
-        }
+        "additional_tags": ["Modified"],
+        "Modified": "2017-04-30 08:58"
         
         ... { A_LOT_OF_OTHER_STUFF } ...
     },
