@@ -48,7 +48,7 @@ class IPythonNB(BaseReader):
         # Files
         filedir = os.path.dirname(filepath)
         filename = os.path.basename(filepath)
-        metadata_filename = os.path.splitext(filename)[0] + '.ipynb-meta'
+        metadata_filename = filename.split('.')[0] + '.ipynb-meta'
         metadata_filepath = os.path.join(filedir, metadata_filename)
 
         if os.path.exists(metadata_filepath):
@@ -61,16 +61,17 @@ class IPythonNB(BaseReader):
             ipynb_file = open(filepath)
             notebook_metadata = json.load(ipynb_file)['metadata']
 
+            additional_metatags = notebook_metadata['additional_tags'] if 'additional_tags' in notebook_metadata else []
+            
             # Change to standard pelican metadata
             for key, value in notebook_metadata.items():
                 key = key.lower()
                 if key in ("title", "date", "category", "tags", "slug", "author", "status"):
                     metadata[key] = self.process_metadata(key, value)
-                if key = "extras" and type(key) is dict:
-                    metadata["extras"] = {};
-                    for extras_key in value:
-                        metadata["extras"][extras_key] = self.process_metadata(extras_key, value)
-                        
+                for additional_key in additional_metatags:
+                    additional_key = additional_key.lower()
+                    if key == additional_key:
+                        metadata[key] = self.process_metadata(additional_key, value)
 
         keys = [k.lower() for k in metadata.keys()]
         if not set(['title', 'date']).issubset(set(keys)):
