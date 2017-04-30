@@ -102,11 +102,37 @@ Edit this the `metadata` tag to have the required markdown metadata:
         "Category": "Category",
         "Tags": "tag1,tag2",
         "slug": "with-metadata",
-        "Author": "Me"
+        "Author": "Me",
+        "Status": "published"
 
         ... { A_LOT_OF_OTHER_STUFF } ...
     },
     { A_LOT_OF_OTHER_STUFF }
+```
+
+Additional meta-tags can be placed inside an `"extras"` object inside the `metadata`, which can be accessed directly inside the pelican themes.
+
+```
+{
+ "metadata": {
+        "name": "My notebook",
+        "Title": "Notebook using internal metadata",
+        "extras": {
+           "Modified": "2017-04-30 08:58"
+        }
+        
+        ... { A_LOT_OF_OTHER_STUFF } ...
+    },
+    { A_LOT_OF_OTHER_STUFF }
+```
+
+Usage inside a pelican theme:
+
+```
+<!-- articles.html -->
+{% if article.modified %}
+Last modified: {{ article.modified }}
+{% endif %}
 ```
 
 ## Mode B: Liquid Tags
