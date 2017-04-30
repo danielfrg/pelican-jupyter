@@ -65,7 +65,7 @@ class IPythonNB(BaseReader):
             original_tags = ("title", "date", "category", "tags", "slug", "author", "status")
             additional_metatags = notebook_metadata[ADDITIONAL_TAGS] if ADDITIONAL_TAGS in notebook_metadata else ()
             
-            metatags = set(original_tags + tuple(additional_metatags))
+            metatags = set(original_tags + tuple(add_tag.lower() for add_tag in additional_metatags))
 
             # Change to standard pelican metadata
             for key, value in notebook_metadata.items():
