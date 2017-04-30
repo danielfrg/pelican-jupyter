@@ -48,7 +48,7 @@ class IPythonNB(BaseReader):
         # Files
         filedir = os.path.dirname(filepath)
         filename = os.path.basename(filepath)
-        metadata_filename = filename.split('.')[0] + '.ipynb-meta'
+        metadata_filename = os.path.splitext(filename)[0] + '.ipynb-meta'
         metadata_filepath = os.path.join(filedir, metadata_filename)
 
         if os.path.exists(metadata_filepath):
@@ -72,6 +72,7 @@ class IPythonNB(BaseReader):
                     additional_key = additional_key.lower()
                     if key == additional_key:
                         metadata[key] = self.process_metadata(additional_key, value)
+                        
 
         keys = [k.lower() for k in metadata.keys()]
         if not set(['title', 'date']).issubset(set(keys)):
