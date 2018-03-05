@@ -81,7 +81,7 @@ def get_html_from_filepath(filepath):
         for i in soup.findAll('div', {'class': 'input'}):
             if i.findChildren()[1].find(text='#ignore') is not None:
                 i.extract()
-        content = soup.decode(formatter=None)
+        content = soup.decode(formatter="minimal")
 
     return content, info
 
