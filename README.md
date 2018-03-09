@@ -48,7 +48,7 @@ git submodule add git://github.com/danielfrg/pelican-ipynb.git plugins/ipynb
 
 ## Mode A: Markup Mode
 
-In the `pelicanconf.py`:
+In the `pelicanconf.py`, call `pelican-ipynb`'s `markup` module:
 ```
 MARKUP = ('md', 'ipynb')
 
@@ -114,7 +114,8 @@ Edit this the `metadata` tag to have the required markdown metadata:
 Install the [liquid_tags plugin](https://github.com/getpelican/pelican-plugins/tree/master/liquid_tags).
 Only the base `liquid_tags.py` and `mdx_liquid_tags.py` files are needed.
 
-In the `pelicanconf.py`:
+In the `pelicanconf.py`, call `pelican-ipynb`'s `liquid` module:
+:
 ```
 MARKUP = ('md', )
 
