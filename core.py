@@ -45,6 +45,10 @@ from pygments.formatters import HtmlFormatter
 
 from copy import deepcopy
 
+from subprocess import call
+import os
+import nbformat
+from shutil import copy2
 
 LATEX_CUSTOM_SCRIPT = """
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
@@ -77,6 +81,20 @@ LATEX_CUSTOM_SCRIPT = """
 </script>
 """
 
+def copy_images(filepath, outputpath):
+    """ Copy images in filepath to outputpath
+    """
+    filedir = os.path.dirname(filepath)
+    with open(filepath) as nb_file:
+        nb_contents = nb_file.read()
+    nb = nbformat.reads(nb_contents, as_version=4)
+
+    for cell in nb['cells']:
+        if 'source' in cell.keys():
+            matches = re.findall('!\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\)',
+                          cell['source'])
+            for path, _ in matches:
+                copy2(os.path.join(filedir, path), outputpath)
 
 def get_html_from_filepath(filepath, start=0, end=None):
     """Convert ipython notebook to html
@@ -88,7 +106,14 @@ def get_html_from_filepath(filepath, start=0, end=None):
     exporter = HTMLExporter(config=config, template_file='basic',
                             filters={'highlight2html': custom_highlighter},
                             preprocessors=[SubCell])
-    content, info = exporter.from_filename(filepath)
+    _, info = exporter.from_filename(filepath)
+
+    # Get content from `jupyter nbconvert` result instead.
+    call("jupyter nbconvert --to html --template basic {}".format(
+        filepath), shell=True)
+    html_filepath = os.path.splitext(filepath)[0]+'.html'
+    with open(html_filepath) as file:
+        content = file.read()
 
     if BeautifulSoup:
         soup = BeautifulSoup(content, 'html.parser')
