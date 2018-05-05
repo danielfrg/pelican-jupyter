@@ -14,8 +14,7 @@ except ImportError:
 from pelican import signals
 from pelican.readers import MarkdownReader, HTMLReader, BaseReader
 
-from .ipynb import get_html_from_filepath, fix_css
-
+from .ipynb import get_html_from_filepath, fix_css, copy_images
 
 def register():
     """
@@ -79,6 +78,7 @@ class IPythonNB(BaseReader):
                       "assuming that this notebook is for liquid tag usage if true ignore this error")
 
         content, info = get_html_from_filepath(filepath)
+        copy_images(filepath, self.settings['OUTPUT_PATH'])
 
         # Generate Summary: Do it before cleaning CSS
         if 'summary' not in [key.lower() for key in self.settings.keys()]:
@@ -100,7 +100,6 @@ class IPythonNB(BaseReader):
         ignore_css = True if 'IPYNB_IGNORE_CSS' in self.settings.keys() else False
         content = fix_css(content, info, ignore_css=ignore_css)
         return content, metadata
-
 
 class MyHTMLParser(HTMLReader._HTMLParser):
     """
@@ -125,6 +124,7 @@ class MyHTMLParser(HTMLReader._HTMLParser):
             self.stop_tags = self.settings['IPYNB_STOP_SUMMARY_TAGS']
         if 'IPYNB_EXTEND_STOP_SUMMARY_TAGS' in self.settings.keys():
             self.stop_tags.extend(self.settings['IPYNB_EXTEND_STOP_SUMMARY_TAGS'])
+
 
     def handle_starttag(self, tag, attrs):
         HTMLReader._HTMLParser.handle_starttag(self, tag, attrs)
