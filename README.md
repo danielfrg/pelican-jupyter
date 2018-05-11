@@ -59,7 +59,7 @@ PLUGIN_PATHS = ['./plugins']
 PLUGINS = ['ipynb.markup']
 ```
 
-### Option 1 (recommended)
+### Option 1 (recommended): separate metadata file
 
 Write the post using the Jupyter Notebook interface, using markdown, equations, etc.
 
@@ -92,7 +92,7 @@ For example, to skip the first two cells:
 Subcells: [2, None]
 ```
 
-### Option 2
+### Option 2: metadata field in notebook
 
 Open the `.ipynb` file in a text editor and look for the `metadata` tag should see.
 
@@ -125,6 +125,29 @@ Edit this the `metadata` tag to have the required markdown metadata:
     { A_LOT_OF_OTHER_STUFF }
 ```
 
+### Option 3: metadata cell in notebook
+
+With this option, the metadata is extracted from the first cell of
+the notebook (which should be a Markdown cell).
+This avoid the burden of maintaining a separate file or manually editing the
+json in the `.ipynb` file like the previous options.
+
+First, enable the "metacell" mode globally in your config
+
+```python
+IPYNB_USE_METACELL = True
+```
+
+Now, you can put the metadata in the first notebook cell in Markdown mode,
+like this:
+
+```markdown
+# How to install pip
+- author: John Doe
+- date: 2018-05-11
+- category: pyhton
+- tags: pip
+```
 
 ## Mode B: Liquid Tags
 
