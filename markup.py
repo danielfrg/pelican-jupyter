@@ -81,7 +81,7 @@ class IPythonNB(BaseReader):
         content, info = get_html_from_filepath(filepath)
 
         # Generate Summary: Do it before cleaning CSS
-        if 'summary' not in [key.lower() for key in self.settings.keys()]:
+        if 'summary' not in keys:
             parser = MyHTMLParser(self.settings, filename)
             if isinstance(content, six.binary_type): # PY2 (str) or PY3 (bytes) to PY2 (unicode) or PY3 (str)
                 # unicode_literals makes format() try to decode as ASCII. Enforce decoding as UTF-8.
