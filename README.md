@@ -82,6 +82,15 @@ Summary:
 
 Note the empty line at the end, you need that.
 
+You can also specify to only include a subset of notebook cells with the
+`Subcells` metadata item.
+It should contain the index (starting at 0) of first and last cell to include
+(use `None` for "unlimited").
+For example, to skip the first two cells:
+
+```
+Subcells: [2, None]
+```
 
 ### Option 2
 

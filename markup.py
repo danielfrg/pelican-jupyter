@@ -1,5 +1,6 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
+import ast
 import os
 import json
 import six
@@ -44,6 +45,8 @@ class IPythonNB(BaseReader):
     def read(self, filepath):
         metadata = {}
         metadata['ipython'] = True
+        start = 0
+        end = None
 
         # Files
         filedir = os.path.dirname(filepath)
@@ -78,7 +81,13 @@ class IPythonNB(BaseReader):
                 raise Exception("Could not find metadata in `.ipynb-meta` or inside `.ipynb` but found `.md` file, "
                       "assuming that this notebook is for liquid tag usage if true ignore this error")
 
-        content, info = get_html_from_filepath(filepath, preprocessors=self.settings.get('IPYNB_PREPROCESSORS', []))
+        if 'subcells' in metadata:
+            start, end = ast.literal_eval(metadata['subcells'])
+
+        content, info = get_html_from_filepath(filepath,
+                                               preprocessors=self.settings.get('IPYNB_PREPROCESSORS', []),
+                                               start=start, end=end
+                                               )
 
         # Generate Summary: Do it before cleaning CSS
         if 'summary' not in keys:
