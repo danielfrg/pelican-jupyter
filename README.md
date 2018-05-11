@@ -1,6 +1,6 @@
 # Pelican plugin for Jupyter/IPython Notebooks
 
-This plugin provides two modes to use Jupyter/IPython notebooks in pelican:
+This plugin provides two modes to use Jupyter/IPython notebooks in [Pelican](https://getpelican.com):
 
 1. As a new markup language so `.ipynb` files are recognized as a valid filetype for an article
 2. As a liquid tag based on the [liquid tags plugin](https://github.com/getpelican/pelican-plugins/tree/master/liquid_tags) so notebooks can be
@@ -24,7 +24,7 @@ The recommended version of libraries are:
 ## Installation
 
 Download this repo and put all the `.py` files it into an `ipynb` directory
-into your `plugins` directory. The structure should look like this:
+in your `plugins` directory. The structure should look like this:
 
 ```
 content
@@ -38,18 +38,21 @@ plugins
     ... other files are optional ...
 ```
 
-See specific modes notes for settings in the `pelicanconf.py`:
+If you manage your site with git (github pages for example),
+you can also define it as a submodule:
 
-If you host your site on git (i.e. github pages) you could use it as a submodule:
-
-```
+```sh
 git submodule add git://github.com/danielfrg/pelican-ipynb.git plugins/ipynb
 ```
 
+See below for additional settings in your `pelicanconf.py`, depending on the
+mode you are using.
+
 ## Mode A: Markup Mode
 
-In the `pelicanconf.py`:
-```
+Setup usage of the `markup` plugin in `pelicanconf.py`:
+
+```python
 MARKUP = ('md', 'ipynb')
 
 PLUGIN_PATHS = ['./plugins']
@@ -64,8 +67,7 @@ Place the `.ipynb` file in the content folder and create a new file with the
 same name as the ipython notebook with extension `.ipynb-meta`.
 For example if you have `my_post.ipynb` create a `my_post.ipynb-meta`.
 
-The `.ipynb-meta` should have the markdown metadata (note the empty line at the end, you need that)
-of a regular pelican article:
+The `.ipynb-meta` should contain the metadata like a regular Markdown based article:
 
 ```
 Title:
@@ -78,6 +80,9 @@ Summary:
 
 ```
 
+Note the empty line at the end, you need that.
+
+
 ### Option 2
 
 Open the `.ipynb` file in a text editor and look for the `metadata` tag should see.
@@ -85,7 +90,9 @@ Open the `.ipynb` file in a text editor and look for the `metadata` tag should s
 ```
 {
     "metadata": {
-        "name": "My notebook"
+        "name": "My notebook",
+        "kernelspec": ...
+        "version": ...
         ... { A_LOT_OF_OTHER_STUFF } ...
     },
 { A_LOT_OF_OTHER_STUFF }
@@ -109,13 +116,15 @@ Edit this the `metadata` tag to have the required markdown metadata:
     { A_LOT_OF_OTHER_STUFF }
 ```
 
+
 ## Mode B: Liquid Tags
 
 Install the [liquid_tags plugin](https://github.com/getpelican/pelican-plugins/tree/master/liquid_tags).
 Only the base `liquid_tags.py` and `mdx_liquid_tags.py` files are needed.
 
 In the `pelicanconf.py`:
-```
+
+```python
 MARKUP = ('md', )
 
 PLUGIN_PATHS = ['./plugins']
@@ -172,11 +181,11 @@ if you find this issues I recommend looking at how my theme fixes them. You can 
 You can include an `#ignore` comment anywhere in a cell of the Jupyter notebook
 to ignore it, removing it from the post content.
 
-On the `pelicanconf.py` you can set:
+In `pelicanconf.py` you can set:
 
 - `IPYNB_USE_META_SUMMARY`: boolean variable to use the summary provided in the `.ipynb-meta` file instead of creating it from the notebook.
-- `IPYNB_STOP_SUMMARY_TAGS`: list of tuple with the html tag and attribute (python HTMLParser format)
-when the summary creation should stop, this is usefull to generate valid/shorter summaries.
+- `IPYNB_STOP_SUMMARY_TAGS`: list of tuples with the html tag and attribute (python HTMLParser format)
+when the summary creation should stop, this is useful to generate valid/shorter summaries.
 `default = [('div', ('class', 'input')), ('div', ('class', 'output'))]`
 - `IPYNB_EXTEND_STOP_SUMMARY_TAGS`: list of tuples to extend the default `IPYNB_STOP_SUMMARY_TAGS`
 - `IGNORE_FILES = ['.ipynb_checkpoints']`: prevents pelican from trying to parse notebook checkpoint files
