@@ -3,6 +3,7 @@ Core module that handles the conversion from notebook to HTML plus some utilitie
 """
 from __future__ import absolute_import, print_function, division
 
+import os
 import re
 
 import IPython
@@ -42,6 +43,7 @@ except:
     BeautifulSoup = None
 
 from pygments.formatters import HtmlFormatter
+import jinja2
 
 from copy import deepcopy
 
@@ -78,10 +80,16 @@ LATEX_CUSTOM_SCRIPT = """
 """
 
 
-def get_html_from_filepath(filepath, start=0, end=None, preprocessors=[]):
+def get_html_from_filepath(filepath, start=0, end=None, preprocessors=[], template=None):
     """Convert ipython notebook to html
     Return: html content of the converted notebook
     """
+    template_file = 'basic'
+    extra_loaders = []
+    if template:
+        extra_loaders.append(jinja2.FileSystemLoader([os.path.dirname(template)]))
+        template_file = os.path.basename(template)
+
     config = Config({'CSSHTMLHeaderTransformer': {
                         'enabled': True,
                         'highlight_class': '.highlight-ipynb'},
@@ -89,9 +97,12 @@ def get_html_from_filepath(filepath, start=0, end=None, preprocessors=[]):
                         'enabled':True,
                         'start':start,
                         'end':end}})
-    exporter = HTMLExporter(config=config, template_file='basic',
+    exporter = HTMLExporter(config=config,
+                            template_file=template_file,
+                            extra_loaders=extra_loaders,
                             filters={'highlight2html': custom_highlighter},
                             preprocessors=[SubCell] + preprocessors)
+
     content, info = exporter.from_filename(filepath)
 
     if BeautifulSoup:

@@ -86,7 +86,8 @@ class IPythonNB(BaseReader):
 
         content, info = get_html_from_filepath(filepath,
                                                preprocessors=self.settings.get('IPYNB_PREPROCESSORS', []),
-                                               start=start, end=end
+                                               start=start, end=end,
+                                               template=self.settings.get('IPYNB_EXPORT_TEMPLATE')
                                                )
 
         # Generate Summary: Do it before cleaning CSS
