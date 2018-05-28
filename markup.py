@@ -78,7 +78,7 @@ class IPythonNB(BaseReader):
                 raise Exception("Could not find metadata in `.ipynb-meta` or inside `.ipynb` but found `.md` file, "
                       "assuming that this notebook is for liquid tag usage if true ignore this error")
 
-        content, info = get_html_from_filepath(filepath)
+        content, info = get_html_from_filepath(filepath, preprocessors=self.settings.get('IPYNB_PREPROCESSORS', []))
 
         # Generate Summary: Do it before cleaning CSS
         if 'summary' not in keys:

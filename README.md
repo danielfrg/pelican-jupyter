@@ -173,7 +173,7 @@ Jupyter Notebook is based on bootstrap so you probably will need your theme to b
 
 I try to inject only the necessary CSS, removing Jupyter's bootstrap but fixes are needed in some cases,
 if you find this issues I recommend looking at how my theme fixes them. You can suppress the inclusion of CSS entirely by setting
-`IPYNB_IGNORE_CSS=True` in `pelicanconf.py`. 
+`IPYNB_IGNORE_CSS=True` in `pelicanconf.py`.
 
 
 ## Options
@@ -190,3 +190,4 @@ when the summary creation should stop, this is useful to generate valid/shorter 
 - `IPYNB_EXTEND_STOP_SUMMARY_TAGS`: list of tuples to extend the default `IPYNB_STOP_SUMMARY_TAGS`
 - `IGNORE_FILES = ['.ipynb_checkpoints']`: prevents pelican from trying to parse notebook checkpoint files
 - `IPYNB_IGNORE_CSS = True`: do not include the notebook CSS in the generated output
+- `IPYNB_PREPROCESSORS`: a list of nbconvert preprocessors to be used when generating the HTML output

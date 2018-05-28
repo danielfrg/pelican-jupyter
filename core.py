@@ -78,16 +78,20 @@ LATEX_CUSTOM_SCRIPT = """
 """
 
 
-def get_html_from_filepath(filepath, start=0, end=None):
+def get_html_from_filepath(filepath, start=0, end=None, preprocessors=[]):
     """Convert ipython notebook to html
     Return: html content of the converted notebook
     """
-    config = Config({'CSSHTMLHeaderTransformer': {'enabled': True,
-                     'highlight_class': '.highlight-ipynb'},
-                     'SubCell': {'enabled':True, 'start':start, 'end':end}})
+    config = Config({'CSSHTMLHeaderTransformer': {
+                        'enabled': True,
+                        'highlight_class': '.highlight-ipynb'},
+                     'SubCell': {
+                        'enabled':True,
+                        'start':start,
+                        'end':end}})
     exporter = HTMLExporter(config=config, template_file='basic',
                             filters={'highlight2html': custom_highlighter},
-                            preprocessors=[SubCell])
+                            preprocessors=[SubCell] + preprocessors)
     content, info = exporter.from_filename(filepath)
 
     if BeautifulSoup:
