@@ -223,3 +223,18 @@ when the summary creation should stop, this is useful to generate valid/shorter 
 - `IGNORE_FILES = ['.ipynb_checkpoints']`: prevents pelican from trying to parse notebook checkpoint files
 - `IPYNB_IGNORE_CSS = True`: do not include the notebook CSS in the generated output
 - `IPYNB_PREPROCESSORS`: a list of nbconvert preprocessors to be used when generating the HTML output
+- `IPYNB_EXPORT_TEMPLATE` (advanced): path to nbconvert export template (relative to project root).
+  For example: create a custom template that extends from the `basic` template and adds some custom
+  CSS and JavaScript:
+  ```
+  {%- extends 'basic.tpl' -%}
+
+  {% block header %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <style type="text/css">
+  div#notebook {
+      border: 1px solid red;
+  }
+  </style>
+  {%- endblock header %}
+  ```

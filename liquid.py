@@ -34,7 +34,8 @@ def notebook(preprocessor, tag, markup):
 
     # nb_dir =  preprocessor.configs.getConfig('NOTEBOOK_DIR')
     nb_path = os.path.join('content', src)
-    content, info = get_html_from_filepath(nb_path, start=start, end=end)
+    template = preprocessor.configs.getConfig('IPYNB_EXPORT_TEMPLATE', None)
+    content, info = get_html_from_filepath(nb_path, start=start, end=end, template=template)
     ignore_css = preprocessor.configs.getConfig('IPYNB_IGNORE_CSS', False)
     content = fix_css(content, info, ignore_css=ignore_css)
     content = preprocessor.configs.htmlStash.store(content, safe=True)
