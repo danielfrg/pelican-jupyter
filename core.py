@@ -103,6 +103,7 @@ def get_html_from_filepath(filepath, start=0, end=None, preprocessors=[], templa
                             filters={'highlight2html': custom_highlighter},
                             preprocessors=[SubCell] + preprocessors)
 
+    config.CSSHTMLHeaderPreprocessor.highlight_class = " .highlight pre "
     content, info = exporter.from_filename(filepath)
 
     if BeautifulSoup:
