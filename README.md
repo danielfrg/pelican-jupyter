@@ -59,9 +59,30 @@ PLUGIN_PATHS = ['./plugins']
 PLUGINS = ['ipynb.markup']
 ```
 
-### Option 1 (recommended): separate metadata file
+### Option 1: Metadata cell in notebook
 
-Write the post using the Jupyter Notebook interface, using markdown, equations, etc.
+With this option, the metadata is extracted from the first cell of
+the notebook (which should be a Markdown cell), this cell is then ignored on the rendering of the notebook.
+This avoid the burden of maintaining a separate file or manually editing the
+json in the `.ipynb` file like the previous options.
+
+First, enable the "metacell" mode globally in your config
+
+```python
+IPYNB_USE_METACELL = True
+```
+
+Now, you can put the metadata in the first notebook cell in Markdown mode,
+like this:
+
+```markdown
+- author: John Doe
+- date: 2018-05-11
+- category: pyhton
+- tags: pip
+```
+
+### Option 2: Separate MD metadata file
 
 Place the `.ipynb` file in the content folder and create a new file with the
 same name as the ipython notebook with extension `.ipynb-meta`.
@@ -92,7 +113,7 @@ For example, to skip the first two cells:
 Subcells: [2, None]
 ```
 
-### Option 2: metadata field in notebook
+### Option 3 (not supported anymore): metadata field in notebook
 
 Open the `.ipynb` file in a text editor and look for the `metadata` tag should see.
 
@@ -125,33 +146,9 @@ Edit this the `metadata` tag to have the required markdown metadata:
     { A_LOT_OF_OTHER_STUFF }
 ```
 
-### Option 3: metadata cell in notebook
+## Mode A: Liquid tags
 
-With this option, the metadata is extracted from the first cell of
-the notebook (which should be a Markdown cell).
-This avoid the burden of maintaining a separate file or manually editing the
-json in the `.ipynb` file like the previous options.
-
-First, enable the "metacell" mode globally in your config
-
-```python
-IPYNB_USE_METACELL = True
-```
-
-Now, you can put the metadata in the first notebook cell in Markdown mode,
-like this:
-
-```markdown
-# How to install pip
-- author: John Doe
-- date: 2018-05-11
-- category: pyhton
-- tags: pip
-```
-
-## Mode B: Liquid Tags
-
-Install the [liquid_tags plugin](https://github.com/getpelican/pelican-plugins/tree/master/liquid_tags).
+**Requires** to install the pelican [liquid_tags plugin](https://github.com/getpelican/pelican-plugins/tree/master/liquid_tags).
 Only the base `liquid_tags.py` and `mdx_liquid_tags.py` files are needed.
 
 In the `pelicanconf.py`:
@@ -181,18 +178,21 @@ Summary:
 
 ## Recommend mode?
 
+Personally I like Method A - Option 1 since you only need to add a cell to the notebook and I usually write the whole
+article in the notebook.
+
+Liquid tag mode provide more flexibility to combine an existing notebook code or output with extra text on a Markdown.
+You can also combine 2 or more notebooks in this mode.
 The only problem with the liquid tag mode is that it doesn't generate a summary for the article
 automatically from the notebook so you have to write it in the `.md` file that includes
 the notebook liquid tag.
-
-So you end up writing two files, one `.md` with some text content
-and the `.ipynb` with the code/plots/equations that makes it a little bit annoying but can
-be useful in some cases.
 
 You can use both modes at the same time but you are probably going to see a exception that
 prevents conflicts, ignore it.
 
 ## Note on CSS
+
+a.k.a. this looks terrible on my theme.
 
 There might be some issues/conflicts regarding the CSS that the Jupyter Notebook requires and the pelican theme.
 
@@ -204,9 +204,10 @@ while trying to make it the most general and useful out of the box as possible, 
 Jupyter Notebook is based on bootstrap so you probably will need your theme to be based on that it if you want the html and css to render nicely.
 
 I try to inject only the necessary CSS, removing Jupyter's bootstrap but fixes are needed in some cases,
-if you find this issues I recommend looking at how my theme fixes them. You can suppress the inclusion of CSS entirely by setting
-`IPYNB_IGNORE_CSS=True` in `pelicanconf.py`.
+if you find this issues I recommend looking at how my theme fixes them.
+You can suppress the inclusion of CSS entirely by setting `IPYNB_IGNORE_CSS=True` in `pelicanconf.py`.
 
+The `IPYNB_EXPORT_TEMPLATE` option is another great way of extending the output natively using Jupyter nbconvert.
 
 ## Options
 
@@ -222,19 +223,21 @@ when the summary creation should stop, this is useful to generate valid/shorter 
 - `IPYNB_EXTEND_STOP_SUMMARY_TAGS`: list of tuples to extend the default `IPYNB_STOP_SUMMARY_TAGS`
 - `IGNORE_FILES = ['.ipynb_checkpoints']`: prevents pelican from trying to parse notebook checkpoint files
 - `IPYNB_IGNORE_CSS = True`: do not include the notebook CSS in the generated output
-- `IPYNB_PREPROCESSORS`: a list of nbconvert preprocessors to be used when generating the HTML output
+- `IPYNB_PREPROCESSORS`: A list of nbconvert preprocessors to be used when generating the HTML output
 - `IPYNB_EXPORT_TEMPLATE` (advanced): path to nbconvert export template (relative to project root).
   For example: create a custom template that extends from the `basic` template and adds some custom
-  CSS and JavaScript:
-  ```
-  {%- extends 'basic.tpl' -%}
+  CSS and JavaScript,
+  more info here [docs](http://nbconvert.readthedocs.io/en/latest/customizing.html), [example template](https://github.com/jupyter/nbconvert/blob/master/nbconvert/templates/html/basic.tpl):
+```
+{%- extends 'basic.tpl' -%}
 
-  {% block header %}
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-  <style type="text/css">
-  div#notebook {
-      border: 1px solid red;
-  }
-  </style>
-  {%- endblock header %}
-  ```
+{% block header %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<style type="text/css">
+div.code_cell {
+    border: 2px solid red;
+}
+</style>
+{%- endblock header %}
+```
