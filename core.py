@@ -41,6 +41,20 @@ except ImportError:
     # IPython < 2.0
     from nbconvert.filters.highlight import _pygments_highlight
 
+try:
+    from nbconvert.nbconvertapp import NbConvertApp
+except ImportError:
+    from IPython.nbconvert.nbconvertapp import NbConvertApp
+
+try:
+    from bs4 import BeautifulSoup
+except:
+    BeautifulSoup = None
+
+from pygments.formatters import HtmlFormatter
+
+from copy import deepcopy
+
 
 LATEX_CUSTOM_SCRIPT = """
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
@@ -74,6 +88,14 @@ LATEX_CUSTOM_SCRIPT = """
 """
 
 
+def get_config():
+    """Load and return the user's nbconvert configuration
+    """
+    app = NbConvertApp()
+    app.load_config_file()
+    return app.config
+
+
 def get_html_from_filepath(filepath, start=0, end=None, preprocessors=[], template=None):
     """Return the HTML from a Jupyter Notebook
     """
@@ -83,7 +105,8 @@ def get_html_from_filepath(filepath, start=0, end=None, preprocessors=[], templa
         extra_loaders.append(jinja2.FileSystemLoader([os.path.dirname(template)]))
         template_file = os.path.basename(template)
 
-    config = Config({'CSSHTMLHeaderTransformer': {
+    config = get_config()
+    config.update({'CSSHTMLHeaderTransformer': {
                         'enabled': True,
                         'highlight_class': '.highlight-ipynb'},
                      'SubCell': {
