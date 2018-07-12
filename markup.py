@@ -6,6 +6,7 @@ import json
 import re
 import six
 import tempfile
+from shutil import copyfile
 
 try:
     # Py3k
@@ -125,6 +126,15 @@ class IPythonNB(BaseReader):
 
         ignore_css = True if 'IPYNB_IGNORE_CSS' in self.settings.keys() else False
         content = fix_css(content, info, ignore_css=ignore_css)
+        if self.settings.get('IPYNB_NB_OUTPUT'):
+            out_path = self.settings.get('OUTPUT_PATH') + '/'
+            target_dir = os.path.dirname(filepath).split('content/')[1]
+            title = metadata['title'].lower().replace(' ', '-')
+            nb_path = '{}/{}.ipynb'.format(target_dir, title)
+            if not os.path.isdir(out_path + target_dir):
+                os.makedirs(out_path + target_dir, exist_ok=True)
+            copyfile(filepath, out_path + nb_path)
+            metadata['nb_path'] = nb_path
         return content, metadata
 
 
