@@ -208,7 +208,7 @@ You can suppress the inclusion of any Notebook CSS entirely by setting `IPYNB_IG
 
 The `IPYNB_EXPORT_TEMPLATE` option is another great way of extending the output natively using Jupyter nbconvert.
 
-## Options
+## Settings
 
 You can include an `#ignore` comment anywhere in a cell of the Jupyter notebook
 to ignore it, removing it from the post content.
