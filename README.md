@@ -214,21 +214,19 @@ The `IPYNB_EXPORT_TEMPLATE` option is another great way of extending the output 
 You can include an `#ignore` comment anywhere in a cell of the Jupyter notebook
 to ignore it, removing it from the post content.
 
-In `pelicanconf.py` you can set:
+In `pelicanconf.py` you can set this:
 
-- `IPYNB_USE_META_SUMMARY`: boolean variable to use the summary provided in the `.ipynb-meta` file instead of creating it from the notebook.
-- `IPYNB_STOP_SUMMARY_TAGS`: list of tuples with the html tag and attribute (python HTMLParser format)
-when the summary creation should stop, this is useful to generate valid/shorter summaries.
-`default = [('div', ('class', 'input')), ('div', ('class', 'output'))]`
-- `IPYNB_EXTEND_STOP_SUMMARY_TAGS`: list of tuples to extend the default `IPYNB_STOP_SUMMARY_TAGS`
-- `IGNORE_FILES = ['.ipynb_checkpoints']`: prevents pelican from trying to parse notebook checkpoint files
-- `IPYNB_IGNORE_CSS = True`: do not include the notebook CSS in the generated output
-- `IPYNB_PREPROCESSORS`: A list of nbconvert preprocessors to be used when generating the HTML output
-- `IPYNB_NB_SAVE_AS`: If you want to make the original notebook available as the output set this variable, this is similar to the default pelican `ARTICLE_SAVE_AS`. This also creates a metadata field `nb_path` which can be used in the `article.html` template, e.g. `<a href="{{ SITEURL }}/{{ article.nb_path }}">Download Notebook</a>`
-- `IPYNB_EXPORT_TEMPLATE` (advanced): path to nbconvert export template (relative to project root).
-  For example: create a custom template that extends from the `basic` template and adds some custom
-  CSS and JavaScript,
-  more info here [docs](http://nbconvert.readthedocs.io/en/latest/customizing.html), [example template](https://github.com/jupyter/nbconvert/blob/master/nbconvert/templates/html/basic.tpl):
+| Settings | Description |
+|---|---|
+| `IPYNB_USE_META_SUMMARY` | Boolean variable to use the summary provided in the `.ipynb-meta` file instead of creating it from the notebook |
+| `IPYNB_STOP_SUMMARY_TAGS` | List of tuples with the html tag and attribute (python HTMLParser format)when the summary creation should stop, this is useful to generate valid/shorter summaries |
+| `IPYNB_EXTEND_STOP_SUMMARY_TAGS` | List of tuples to extend the default `IPYNB_STOP_SUMMARY_TAGS` |
+| `IGNORE_FILES = ['.ipynb_checkpoints']` | Prevents pelican from trying to parse notebook checkpoint files |
+| `IPYNB_IGNORE_CSS = True` | Do not include the notebook CSS in the generated output |
+| `IPYNB_PREPROCESSORS` | A list of nbconvert preprocessors to be used when generating the HTML output |
+| `IPYNB_NB_SAVE_AS` | If you want to make the original notebook available as the output set this variable, this is similar to the default pelican `ARTICLE_SAVE_AS`. This also creates a metadata field `nb_path` which can be used in the `article.html` template, e.g. `Download Notebook` |
+| `IPYNB_EXPORT_TEMPLATE` (advanced) | Path to nbconvert export template (relative to project root). For example: Create a custom template that extends from the `basic` template and adds some custom,CSS and JavaScript, more info here [docs](http://nbconvert.readthedocs.io/en/latest/customizing.html), example template below and a [complete one here](https://github.com/jupyter/nbconvert/blob/master/nbconvert/templates/html/basic.tpl) |
+
 ```
 {%- extends 'basic.tpl' -%}
 
