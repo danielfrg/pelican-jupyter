@@ -119,12 +119,12 @@ class IPythonNB(BaseReader):
             parser.feed(content)
             parser.close()
             content = parser.body
-            if ('IPYNB_USE_META_SUMMARY' in self.settings.keys() and \
-              self.settings['IPYNB_USE_META_SUMMARY'] == False) or \
-              'IPYNB_USE_META_SUMMARY' not in self.settings.keys():
+
+            use_meta_summary = self.settings.get('IPYNB_USE_META_SUMMARY', False)
+            if use_meta_summary:
                 metadata['summary'] = parser.summary
 
-        ignore_css = True if 'IPYNB_IGNORE_CSS' in self.settings.keys() else False
+        ignore_css = True if self.settings.get('IPYNB_IGNORE_CSS', False) else False
         content = fix_css(content, info, ignore_css=ignore_css)
         if self.settings.get('IPYNB_NB_SAVE_AS'):
             output_path = self.settings.get('OUTPUT_PATH')
@@ -155,9 +155,7 @@ class MyHTMLParser(HTMLReader._HTMLParser):
         self.wordcount = 0
         self.summary = None
 
-        self.stop_tags = [('div', ('class', 'input')), ('div', ('class', 'output')), ('h2', ('id', 'Header-2'))]
-        if 'IPYNB_STOP_SUMMARY_TAGS' in self.settings.keys():
-            self.stop_tags = self.settings['IPYNB_STOP_SUMMARY_TAGS']
+        self.stop_tags = self.settings.get('IPYNB_STOP_SUMMARY_TAGS', [('div', ('class', 'input')), ('div', ('class', 'output')), ('h2', ('id', 'Header-2'))])
         if 'IPYNB_EXTEND_STOP_SUMMARY_TAGS' in self.settings.keys():
             self.stop_tags.extend(self.settings['IPYNB_EXTEND_STOP_SUMMARY_TAGS'])
 
