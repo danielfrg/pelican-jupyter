@@ -224,7 +224,7 @@ In `pelicanconf.py` you can set this:
 | `IPYNB_EXTEND_STOP_SUMMARY_TAGS` | List of tuples to extend the default `IPYNB_STOP_SUMMARY_TAGS`. |
 | `IPYNB_PREPROCESSORS` | A list of nbconvert preprocessors to be used when generating the HTML output. |
 | `IPYNB_NB_SAVE_AS` | If you want to make the original notebook available as the output set this variable, this is similar to the default pelican `ARTICLE_SAVE_AS`. This also creates a metadata field `nb_path` which can be used in the `article.html` template, e.g. `Download Notebook`. |
-| `IPYNB_EXPORT_TEMPLATE` (advanced) | Path to nbconvert export template (relative to project root). For example: Create a custom template that extends from the `basic` template and adds some custom,CSS and JavaScript, more info here [docs](http://nbconvert.readthedocs.io/en/latest/customizing.html), example template below and a [complete one here](https://github.com/jupyter/nbconvert/blob/master/nbconvert/templates/html/basic.tpl). |
+| `IPYNB_EXPORT_TEMPLATE` | Path to nbconvert export template (relative to project root). For example: Create a custom template that extends from the `basic` template and adds some custom,CSS and JavaScript, more info here [docs](http://nbconvert.readthedocs.io/en/latest/customizing.html), example template below and a [complete one here](https://github.com/jupyter/nbconvert/blob/master/nbconvert/templates/html/basic.tpl). |
 
 ```
 {%- extends 'basic.tpl' -%}
