@@ -126,15 +126,14 @@ class IPythonNB(BaseReader):
 
         ignore_css = True if 'IPYNB_IGNORE_CSS' in self.settings.keys() else False
         content = fix_css(content, info, ignore_css=ignore_css)
-        if self.settings.get('IPYNB_NB_OUTPUT'):
-            out_path = self.settings.get('OUTPUT_PATH') + '/'
-            target_dir = os.path.dirname(filepath).split('content/')[1]
-            title = metadata['title'].lower().replace(' ', '-')
-            nb_path = '{}/{}.ipynb'.format(target_dir, title)
-            if not os.path.isdir(out_path + target_dir):
-                os.makedirs(out_path + target_dir, exist_ok=True)
-            copyfile(filepath, out_path + nb_path)
-            metadata['nb_path'] = nb_path
+        if self.settings.get('IPYNB_NB_SAVE_AS'):
+            output_path = self.settings.get('OUTPUT_PATH')
+            nb_output_fullpath = self.settings.get('IPYNB_NB_SAVE_AS').format(**metadata)
+            nb_output_dir = os.path.join(output_path, os.path.dirname(nb_output_fullpath))
+            if not os.path.isdir(nb_output_dir):
+                os.makedirs(nb_output_dir, exist_ok=True)
+            copyfile(filepath, os.path.join(output_path, nb_output_fullpath))
+            metadata['nb_path'] = nb_output_fullpath
         return content, metadata
 
 

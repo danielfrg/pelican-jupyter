@@ -224,7 +224,7 @@ when the summary creation should stop, this is useful to generate valid/shorter 
 - `IGNORE_FILES = ['.ipynb_checkpoints']`: prevents pelican from trying to parse notebook checkpoint files
 - `IPYNB_IGNORE_CSS = True`: do not include the notebook CSS in the generated output
 - `IPYNB_PREPROCESSORS`: A list of nbconvert preprocessors to be used when generating the HTML output
-- `IPYNB_NB_OUTPUT`: boolean indicating whether to copy the raw notebook into `output/notebooks/`. This also creates a metadata field `nb_path` which can be used in the `article.html` template, e.g. `<a href="{{ SITEURL }}/{{ article.nb_path }}">Download Notebook</a>`
+- `IPYNB_NB_SAVE_AS`: If you want to make the original notebook available as the output set this variable, this is similar to the default pelican `ARTICLE_SAVE_AS`. This also creates a metadata field `nb_path` which can be used in the `article.html` template, e.g. `<a href="{{ SITEURL }}/{{ article.nb_path }}">Download Notebook</a>`
 - `IPYNB_EXPORT_TEMPLATE` (advanced): path to nbconvert export template (relative to project root).
   For example: create a custom template that extends from the `basic` template and adds some custom
   CSS and JavaScript,
