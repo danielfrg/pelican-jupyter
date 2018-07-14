@@ -47,7 +47,7 @@ class IPythonNB(BaseReader):
 
     def read(self, filepath):
         metadata = {}
-        metadata['ipython'] = True
+        metadata['jupyter_notebook'] = True
         start = 0
         end = None
 
