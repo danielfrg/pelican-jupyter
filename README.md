@@ -219,11 +219,11 @@ In `pelicanconf.py` you can set this:
 |---|---|
 | `IGNORE_FILES = ['.ipynb_checkpoints']` | Prevents pelican from trying to parse notebook checkpoint files. |
 | `IPYNB_IGNORE_CSS = False` | Do not include the notebook CSS in the generated output. |
-| `IPYNB_USE_META_SUMMARY = False` | Boolean variable to use the summary provided in the `.ipynb-meta` file instead of auto-creating it from the notebook. |
+| `IPYNB_GENERATE_SUMMARY = True` | Create a summary based on the notebook content. Every notebook can still use the s`Summary` from the metadata to overwrite this. |
 | `IPYNB_STOP_SUMMARY_TAGS = [('div', ('class', 'input')), ('div', ('class', 'output')), ('h2', ('id', 'Header-2'))]` | List of tuples with the html tag and attribute (python HTMLParser format) that are used to stop the summary creation, this is useful to generate valid/shorter summaries. |
 | `IPYNB_EXTEND_STOP_SUMMARY_TAGS` | List of tuples to extend the default `IPYNB_STOP_SUMMARY_TAGS`. |
 | `IPYNB_PREPROCESSORS` | A list of nbconvert preprocessors to be used when generating the HTML output. |
-| `IPYNB_NB_SAVE_AS` | If you want to make the original notebook available as the output set this variable, this is similar to the default pelican `ARTICLE_SAVE_AS`. This also creates a metadata field `nb_path` which can be used in the `article.html` template, e.g. `Download Notebook`. |
+| `IPYNB_NB_SAVE_AS` | If you want to make the original notebook available set this variable in a  is similar way to the default pelican `ARTICLE_SAVE_AS` setting. This will also add a metadata field `nb_path` which can be used in the theme. e.g. `blog/{date:%Y}/{date:%m}/{date:%d}/{slug}/notebook.ipynb` |
 | `IPYNB_EXPORT_TEMPLATE` | Path to nbconvert export template (relative to project root). For example: Create a custom template that extends from the `basic` template and adds some custom,CSS and JavaScript, more info here [docs](http://nbconvert.readthedocs.io/en/latest/customizing.html), example template below and a [complete one here](https://github.com/jupyter/nbconvert/blob/master/nbconvert/templates/html/basic.tpl). |
 
 ```

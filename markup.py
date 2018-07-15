@@ -107,10 +107,11 @@ class IPythonNB(BaseReader):
                                                template=self.settings.get('IPYNB_EXPORT_TEMPLATE')
                                                )
 
-        # Generate Summary: Do it before cleaning CSS
-        if 'summary' not in keys:
+        # Generate summary: Do it before cleaning CSS
+        use_meta_summary = self.settings.get('IPYNB_GENERATE_SUMMARY', True)
+        if 'summary' not in keys and use_meta_summary:
             parser = MyHTMLParser(self.settings, filename)
-            if isinstance(content, six.binary_type): # PY2 (str) or PY3 (bytes) to PY2 (unicode) or PY3 (str)
+            if isinstance(content, six.binary_type):
                 # unicode_literals makes format() try to decode as ASCII. Enforce decoding as UTF-8.
                 content = '<body>{0}</body>'.format(content.decode("utf-8"))
             else:
@@ -118,12 +119,10 @@ class IPythonNB(BaseReader):
                 content = '<body>{0}</body>'.format(content)
             parser.feed(content)
             parser.close()
-            content = parser.body
+            # content = parser.body
+            metadata['summary'] = parser.summary
 
-            use_meta_summary = self.settings.get('IPYNB_USE_META_SUMMARY', False)
-            if use_meta_summary:
-                metadata['summary'] = parser.summary
-
+        # Write/fix content
         ignore_css = True if self.settings.get('IPYNB_IGNORE_CSS', False) else False
         content = fix_css(content, info, ignore_css=ignore_css)
         if self.settings.get('IPYNB_NB_SAVE_AS'):
