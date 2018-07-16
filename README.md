@@ -8,7 +8,7 @@ included in a regular post using Markdown (`.md`) files.
 
 ## Requirements
 
-Python 2.7 and 3.4 are supported
+Python 2.7 and 3.4 are supported.
 
 The main objective is to run with the latest version of Jupyter/IPython
 but there is a good chance the plugin will work correctly with older versions of Pelican and Jupyter/IPython.
@@ -18,8 +18,6 @@ The recommended version of libraries are:
 - `jupyter>=1.0`
 - `ipython>=4.0`
 - `nbconvert>=4.0`
-- `beautifulsoup4`
-
 
 ## Installation
 
@@ -41,12 +39,11 @@ plugins
 If you manage your site with git (github pages for example),
 you can also define it as a submodule:
 
-```sh
+```
 git submodule add git://github.com/danielfrg/pelican-ipynb.git plugins/ipynb
 ```
 
-See below for additional settings in your `pelicanconf.py`, depending on the
-mode you are using.
+See below for additional settings in your `pelicanconf.py`, depending on the mode you are using.
 
 ## Mode A: Markup Mode
 
@@ -59,30 +56,7 @@ PLUGIN_PATHS = ['./plugins']
 PLUGINS = ['ipynb.markup']
 ```
 
-### Option 1: Metadata cell in notebook
-
-With this option, the metadata is extracted from the first cell of
-the notebook (which should be a Markdown cell), this cell is then ignored on the rendering of the notebook.
-This avoid the burden of maintaining a separate file or manually editing the
-json in the `.ipynb` file like the previous options.
-
-First, enable the "metacell" mode globally in your config
-
-```python
-IPYNB_USE_METACELL = True
-```
-
-Now, you can put the metadata in the first notebook cell in Markdown mode,
-like this:
-
-```markdown
-- author: John Doe
-- date: 2018-05-11
-- category: pyhton
-- tags: pip
-```
-
-### Option 2: Separate MD metadata file
+### Option 1: Separate MD metadata file
 
 Place the `.ipynb` file in the content folder and create a new file with the
 same name as the ipython notebook with extension `.ipynb-meta`.
@@ -113,43 +87,33 @@ For example, to skip the first two cells:
 Subcells: [2, None]
 ```
 
-### Option 3 (not supported anymore): metadata field in notebook
+### Option 2: Metadata cell in notebook
 
-Open the `.ipynb` file in a text editor and look for the `metadata` tag should see.
+With this option, the metadata is extracted from the first cell of
+the notebook (which should be a Markdown cell), this cell is then ignored on the rendering of the notebook.
+This avoid the burden of maintaining a separate file or manually editing the
+json in the `.ipynb` file like the previous options.
 
-```
-{
-    "metadata": {
-        "name": "My notebook",
-        "kernelspec": ...
-        "version": ...
-        ... { A_LOT_OF_OTHER_STUFF } ...
-    },
-{ A_LOT_OF_OTHER_STUFF }
+First, enable the "metacell" mode globally in your config
+
+```python
+IPYNB_USE_METACELL = True
 ```
 
-Edit this the `metadata` tag to have the required markdown metadata:
+Now, you can put the metadata in the first notebook cell in Markdown mode,
+like this:
 
-```
-{
- "metadata": {
-        "name": "My notebook",
-        "Title": "Notebook using internal metadata",
-        "Date": "2100-12-31",
-        "Category": "Category",
-        "Tags": "tag1,tag2",
-        "slug": "with-metadata",
-        "Author": "Me"
-
-        ... { A_LOT_OF_OTHER_STUFF } ...
-    },
-    { A_LOT_OF_OTHER_STUFF }
+```markdown
+- author: John Doe
+- date: 2018-05-11
+- category: pyhton
+- tags: pip
 ```
 
-## Mode A: Liquid tags
+## Mode B: Liquid tags
 
 **Requires** to install the pelican [liquid_tags plugin](https://github.com/getpelican/pelican-plugins/tree/master/liquid_tags).
-Only the base `liquid_tags.py` and `mdx_liquid_tags.py` files are needed.
+Only the base `liquid_tags.py` and `mdx_liquid_tags.py` files are required.
 
 In the `pelicanconf.py`:
 
@@ -173,15 +137,14 @@ Author:
 Summary:
 
 {% notebook path/from/content/dir/to/notebook.ipynb %}
-
 ```
 
 ## Recommend mode?
 
-Personally I like Method A - Option 1 since you only need to add a cell to the notebook and I usually write the whole
+Personally I like Method A - Option 2 since you only need to add a cell to the notebook and I usually write the whole
 article in the notebook.
 
-Liquid tag mode provide more flexibility to combine an existing notebook code or output with extra text on a Markdown.
+The Liquid tag mode provide more flexibility to combine an existing notebook code or output with extra text on a Markdown.
 You can also combine 2 or more notebooks in this mode.
 The only problem with the liquid tag mode is that it doesn't generate a summary for the article
 automatically from the notebook so you have to write it in the `.md` file that includes
@@ -210,15 +173,19 @@ The `IPYNB_EXPORT_TEMPLATE` option is another great way of extending the output 
 
 ## Settings
 
-You can include an `#ignore` comment anywhere in a cell of the Jupyter notebook
-to ignore it, removing it from the post content.
+**Note:** If you are using the Liquid mode you need to set the variables like this inside the `pelicanconf.py`.
 
-In `pelicanconf.py` you can set this:
+```
+LIQUID_CONFIGS = (('IPYNB_EXPORT_TEMPLATE', 'notebook.tpl', ""), )
+```
+
+If you are using the Markup mode then just add this variables to your `pelicanconf.py`.
 
 | Setting | Description |
 |---|---|
 | `IGNORE_FILES = ['.ipynb_checkpoints']` | Prevents pelican from trying to parse notebook checkpoint files. |
-| `IPYNB_IGNORE_CSS = False` | Do not include the notebook CSS in the generated output. |
+| `IPYNB_FIX_CSS = True` | Do not apply any of the plugins "fixes" to the Jupyter CSS use all the default Jupyter CSS. |
+| `IPYNB_IGNORE_CSS = False` | Do not include (at all) the notebook CSS in the generated output. This is usefull if you want to include it yourself in the theme. |
 | `IPYNB_GENERATE_SUMMARY = True` | Create a summary based on the notebook content. Every notebook can still use the s`Summary` from the metadata to overwrite this. |
 | `IPYNB_STOP_SUMMARY_TAGS = [('div', ('class', 'input')), ('div', ('class', 'output')), ('h2', ('id', 'Header-2'))]` | List of tuples with the html tag and attribute (python HTMLParser format) that are used to stop the summary creation, this is useful to generate valid/shorter summaries. |
 | `IPYNB_EXTEND_STOP_SUMMARY_TAGS` | List of tuples to extend the default `IPYNB_STOP_SUMMARY_TAGS`. |

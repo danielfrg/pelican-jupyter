@@ -5,6 +5,10 @@ from __future__ import absolute_import, print_function, division
 
 import os
 import re
+from copy import deepcopy
+
+import jinja2
+from pygments.formatters import HtmlFormatter
 
 import IPython
 try:
@@ -36,16 +40,6 @@ try:
 except ImportError:
     # IPython < 2.0
     from nbconvert.filters.highlight import _pygments_highlight
-
-try:
-    from bs4 import BeautifulSoup
-except:
-    BeautifulSoup = None
-
-from pygments.formatters import HtmlFormatter
-import jinja2
-
-from copy import deepcopy
 
 
 LATEX_CUSTOM_SCRIPT = """
@@ -81,8 +75,7 @@ LATEX_CUSTOM_SCRIPT = """
 
 
 def get_html_from_filepath(filepath, start=0, end=None, preprocessors=[], template=None):
-    """Convert ipython notebook to html
-    Return: html content of the converted notebook
+    """Return the HTML from a Jupyter Notebook
     """
     template_file = 'basic'
     extra_loaders = []
@@ -106,24 +99,21 @@ def get_html_from_filepath(filepath, start=0, end=None, preprocessors=[], templa
     config.CSSHTMLHeaderPreprocessor.highlight_class = " .highlight pre "
     content, info = exporter.from_filename(filepath)
 
-    if BeautifulSoup:
-        soup = BeautifulSoup(content, 'html.parser')
-        for i in soup.findAll('div', {'class': 'input'}):
-            if i.findChildren()[1].find(text='#ignore') is not None:
-                i.extract()
-        content = soup.decode(formatter="minimal")
-
     return content, info
 
 
-def fix_css(content, info, ignore_css=False):
+def parse_css(content, info, fix_css=True, ignore_css=False):
     """
     General fixes for the notebook generated html
+
+    fix_css is to do a basic filter to remove extra CSS from the Jupyter CSS
+    ignore_css is to not include at all the Jupyter CSS
     """
     def filter_css(style_text):
         """
-        HACK: IPython returns a lot of CSS including its own bootstrap.
-        Get only the IPython Notebook CSS styles.
+        This is a little bit of a Hack.
+        Jupyter returns a lot of CSS including its own bootstrap.
+        We try to get only the Jupyter Notebook CSS without the extra stuff.
         """
         index = style_text.find('/*!\n*\n* IPython notebook\n*\n*/')
         if index > 0:
@@ -139,8 +129,11 @@ def fix_css(content, info, ignore_css=False):
     if ignore_css:
         content = content + LATEX_CUSTOM_SCRIPT
     else:
-        ipython_css = '\n'.join(filter_css(css_style) for css_style in info['inlining']['css'])
-        content = ipython_css + content + LATEX_CUSTOM_SCRIPT
+        if fix_css:
+            jupyter_css = '\n'.join(filter_css(css_style) for css_style in info['inlining']['css'])
+        else:
+            jupyter_css = info['inlining']['css']
+        content = jupyter_css + content + LATEX_CUSTOM_SCRIPT
     return content
 
 

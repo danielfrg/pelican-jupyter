@@ -18,7 +18,7 @@ except ImportError:
 from pelican import signals
 from pelican.readers import MarkdownReader, HTMLReader, BaseReader
 
-from .ipynb import get_html_from_filepath, fix_css
+from .ipynb import get_html_from_filepath, parse_css
 
 
 def register():
@@ -57,16 +57,17 @@ class IPythonNB(BaseReader):
         metadata_filename = os.path.splitext(filename)[0] + '.ipynb-meta'
         metadata_filepath = os.path.join(filedir, metadata_filename)
 
-        # When metadata is in a external file, process using Pelican MD Reader
+        # When metadata is in an external file, process the MD file using Pelican MD Reader
         md_reader = MarkdownReader(self.settings)
 
         if os.path.exists(metadata_filepath):
             _content, metadata = md_reader.read(metadata_filepath)
         else:
-            # Load metadata from ipython notebook file
+            # No external .md file: Load metadata from ipython notebook file
             with open(filepath) as ipynb_file:
                 doc = json.load(ipynb_file)
             if self.settings.get('IPYNB_USE_METACELL'):
+                # Option 2: Use metadata on notebook cell
                 metacell = "\n".join(doc['cells'][0]['source'])
                 # Convert Markdown title and listings to standard metadata items
                 metacell = re.sub(r'^#+\s+', 'title: ', metacell, flags=re.MULTILINE)
@@ -80,6 +81,7 @@ class IPythonNB(BaseReader):
                 # Skip metacell
                 start = 1
             else:
+                # Option 3: Read metadata from inside the notebook
                 notebook_metadata = doc['metadata']
                 # Change to standard pelican metadata
                 for key, value in notebook_metadata.items():
@@ -123,8 +125,9 @@ class IPythonNB(BaseReader):
             metadata['summary'] = parser.summary
 
         # Write/fix content
-        ignore_css = True if self.settings.get('IPYNB_IGNORE_CSS', False) else False
-        content = fix_css(content, info, ignore_css=ignore_css)
+        fix_css = self.settings.get('IPYNB_FIX_CSS', True)
+        ignore_css = self.settings.get('IPYNB_IGNORE_CSS', False)
+        content = parse_css(content, info, fix_css=fix_css, ignore_css=ignore_css)
         if self.settings.get('IPYNB_NB_SAVE_AS'):
             output_path = self.settings.get('OUTPUT_PATH')
             nb_output_fullpath = self.settings.get('IPYNB_NB_SAVE_AS').format(**metadata)
