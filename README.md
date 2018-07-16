@@ -59,10 +59,10 @@ PLUGINS = ['ipynb.markup']
 ### Option 1: Separate MD metadata file
 
 Place the `.ipynb` file in the content folder and create a new file with the
-same name as the ipython notebook with extension `.ipynb-meta`.
-For example if you have `my_post.ipynb` create a `my_post.ipynb-meta`.
+same name as the ipython notebook with extension `.nbdata`.
+For example if you have `my_post.ipynb` create a `my_post.nbdata`.
 
-The `.ipynb-meta` should contain the metadata like a regular Markdown based article:
+The `.nbdata` should contain the metadata like a regular Markdown based article:
 
 ```
 Title:
@@ -100,14 +100,48 @@ First, enable the "metacell" mode globally in your config
 IPYNB_USE_METACELL = True
 ```
 
-Now, you can put the metadata in the first notebook cell in Markdown mode,
-like this:
+Now, you can put the metadata in the first notebook cell in Markdown mode, like this:
 
 ```markdown
+- title: My notebook
 - author: John Doe
 - date: 2018-05-11
 - category: pyhton
 - tags: pip
+```
+
+### Option 3: metadata field in notebook
+
+Open the `.ipynb` file in a text editor or using the Jupyter Notebook editor under "File"
+and look for the `metadata` tag should see.
+
+```
+{
+    "metadata": {
+        "name": "My notebook",
+        "kernelspec": ...
+        "version": ...
+        ... { A_LOT_OF_OTHER_STUFF } ...
+    },
+{ A_LOT_OF_OTHER_STUFF }
+```
+
+Edit this the `metadata` tag to have the required markdown fields:
+
+```
+{
+ "metadata": {
+        "name": "My notebook",
+        "Title": "Notebook using internal metadata",
+        "Date": "2100-12-31",
+        "Category": "Category",
+        "Tags": "tag1,tag2",
+        "slug": "with-metadata",
+        "Author": "Me"
+
+        ... { A_LOT_OF_OTHER_STUFF } ...
+    },
+    { A_LOT_OF_OTHER_STUFF }
 ```
 
 ## Mode B: Liquid tags
@@ -141,8 +175,8 @@ Summary:
 
 ## Recommend mode?
 
-Personally I like Method A - Option 2 since you only need to add a cell to the notebook and I usually write the whole
-article in the notebook.
+Personally I like Method A - Option 1 since I write the Notebooks first and then I just add
+the metadata file and keeps the notebook clean.
 
 The Liquid tag mode provide more flexibility to combine an existing notebook code or output with extra text on a Markdown.
 You can also combine 2 or more notebooks in this mode.

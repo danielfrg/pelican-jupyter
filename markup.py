@@ -54,20 +54,19 @@ class IPythonNB(BaseReader):
         # Files
         filedir = os.path.dirname(filepath)
         filename = os.path.basename(filepath)
-        metadata_filename = os.path.splitext(filename)[0] + '.ipynb-meta'
+        metadata_filename = os.path.splitext(filename)[0] + '.nbdata'
         metadata_filepath = os.path.join(filedir, metadata_filename)
 
-        # When metadata is in an external file, process the MD file using Pelican MD Reader
-        md_reader = MarkdownReader(self.settings)
-
         if os.path.exists(metadata_filepath):
+            # When metadata is in an external file, process the MD file using Pelican MD Reader
+            md_reader = MarkdownReader(self.settings)
             _content, metadata = md_reader.read(metadata_filepath)
         else:
             # No external .md file: Load metadata from ipython notebook file
             with open(filepath) as ipynb_file:
                 doc = json.load(ipynb_file)
             if self.settings.get('IPYNB_USE_METACELL'):
-                # Option 2: Use metadata on notebook cell
+                # Option 2: Use metadata on the first notebook cell
                 metacell = "\n".join(doc['cells'][0]['source'])
                 # Convert Markdown title and listings to standard metadata items
                 metacell = re.sub(r'^#+\s+', 'title: ', metacell, flags=re.MULTILINE)
@@ -95,9 +94,9 @@ class IPythonNB(BaseReader):
             md_filename = filename.split('.')[0] + '.md'
             md_filepath = os.path.join(filedir, md_filename)
             if not os.path.exists(md_filepath):
-                raise Exception("Could not find metadata in `.ipynb-meta`, inside `.ipynb` or external `.md` file.")
+                raise Exception("Could not find metadata in `.nbdata` file or inside `.ipynb`")
             else:
-                raise Exception("Could not find metadata in `.ipynb-meta` or inside `.ipynb` but found `.md` file, "
+                raise Exception("Could not find metadata in `.nbdata` file or inside `.ipynb` but found `.md` file, "
                       "assuming that this notebook is for liquid tag usage if true ignore this error")
 
         if 'subcells' in metadata:
@@ -107,7 +106,7 @@ class IPythonNB(BaseReader):
                                                preprocessors=self.settings.get('IPYNB_PREPROCESSORS', []),
                                                start=start, end=end,
                                                template=self.settings.get('IPYNB_EXPORT_TEMPLATE')
-                                               )
+                                            )
 
         # Generate summary: Do it before cleaning CSS
         use_meta_summary = self.settings.get('IPYNB_GENERATE_SUMMARY', True)
