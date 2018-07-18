@@ -33,11 +33,15 @@ def notebook(preprocessor, tag, markup):
     end = int(end) if end else None
 
     nb_path = os.path.join('content', src)
+    preprocessors = preprocessor.configs.getConfig('IPYNB_PREPROCESSORS', [])
     template = preprocessor.configs.getConfig('IPYNB_EXPORT_TEMPLATE', None)
-    content, info = get_html_from_filepath(nb_path, start=start, end=end, template=template)
+    content, info = get_html_from_filepath(nb_path, start=start, end=end, preprocessors=preprocessors, template=template)
+    
+    # Fix CSS
     fix_css = preprocessor.configs.getConfig('IPYNB_FIX_CSS', True)
-    ignore_css = preprocessor.configs.getConfig('IPYNB_IGNORE_CSS', False)
-    content = parse_css(content, info, ignore_css=ignore_css)
+    ignore_css = preprocessor.configs.getConfig('IPYNB_SKIP_CSS', False)
+    content = parse_css(content, info, fix_css=fix_css, ignore_css=ignore_css)
+    
     content = preprocessor.configs.htmlStash.store(content, safe=True)
     return content
 

@@ -102,10 +102,12 @@ class IPythonNB(BaseReader):
         if 'subcells' in metadata:
             start, end = ast.literal_eval(metadata['subcells'])
 
+        preprocessors = self.settings.get('IPYNB_PREPROCESSORS', [])
+        template = self.settings.get('IPYNB_EXPORT_TEMPLATE', None)
         content, info = get_html_from_filepath(filepath,
-                                               preprocessors=self.settings.get('IPYNB_PREPROCESSORS', []),
                                                start=start, end=end,
-                                               template=self.settings.get('IPYNB_EXPORT_TEMPLATE')
+                                               preprocessors=preprocessors,
+                                               template=template,
                                             )
 
         # Generate summary: Do it before cleaning CSS
@@ -125,7 +127,7 @@ class IPythonNB(BaseReader):
 
         # Write/fix content
         fix_css = self.settings.get('IPYNB_FIX_CSS', True)
-        ignore_css = self.settings.get('IPYNB_IGNORE_CSS', False)
+        ignore_css = self.settings.get('IPYNB_SKIP_CSS', False)
         content = parse_css(content, info, fix_css=fix_css, ignore_css=ignore_css)
         if self.settings.get('IPYNB_NB_SAVE_AS'):
             output_path = self.settings.get('OUTPUT_PATH')

@@ -109,30 +109,33 @@ def parse_css(content, info, fix_css=True, ignore_css=False):
     fix_css is to do a basic filter to remove extra CSS from the Jupyter CSS
     ignore_css is to not include at all the Jupyter CSS
     """
-    def filter_css(style_text):
+    def style_tag(styles):
+        return '<style type=\"text/css\">{0}</style>'.format(styles)
+
+    def filter_css(style):
         """
         This is a little bit of a Hack.
         Jupyter returns a lot of CSS including its own bootstrap.
         We try to get only the Jupyter Notebook CSS without the extra stuff.
         """
-        index = style_text.find('/*!\n*\n* IPython notebook\n*\n*/')
+        index = style.find('/*!\n*\n* IPython notebook\n*\n*/')
         if index > 0:
-            style_text = style_text[index:]
-        index = style_text.find('/*!\n*\n* IPython notebook webapp\n*\n*/')
+            style = style[index:]
+        index = style.find('/*!\n*\n* IPython notebook webapp\n*\n*/')
         if index > 0:
-            style_text = style_text[:index]
+            style = style[:index]
 
-        style_text = re.sub(r'color\:\#0+(;)?', '', style_text)
-        style_text = re.sub(r'\.rendered_html[a-z0-9,._ ]*\{[a-z0-9:;%.#\-\s\n]+\}', '', style_text)
-        return '<style type=\"text/css\">{0}</style>'.format(style_text)
+        style = re.sub(r'color\:\#0+(;)?', '', style)
+        style = re.sub(r'\.rendered_html[a-z0-9,._ ]*\{[a-z0-9:;%.#\-\s\n]+\}', '', style)
+        return style_tag(style)
 
     if ignore_css:
         content = content + LATEX_CUSTOM_SCRIPT
     else:
         if fix_css:
-            jupyter_css = '\n'.join(filter_css(css_style) for css_style in info['inlining']['css'])
+            jupyter_css = '\n'.join(filter_css(style) for style in info['inlining']['css'])
         else:
-            jupyter_css = info['inlining']['css']
+            jupyter_css = '\n'.join(style_tag(style) for style in info['inlining']['css'])
         content = jupyter_css + content + LATEX_CUSTOM_SCRIPT
     return content
 
