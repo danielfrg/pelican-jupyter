@@ -18,6 +18,7 @@ The recommended version of libraries are:
 - `jupyter>=1.0`
 - `ipython>=4.0`
 - `nbconvert>=4.0`
+- `markdown>=2.6.1`
 
 ## Installation
 
