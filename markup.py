@@ -56,7 +56,7 @@ class IPythonNB(BaseReader):
         filename = os.path.basename(filepath)
         metadata_filename = os.path.splitext(filename)[0] + '.nbdata'
         metadata_filepath = os.path.join(filedir, metadata_filename)
-
+        
         if os.path.exists(metadata_filepath):
             # When metadata is in an external file, process the MD file using Pelican MD Reader
             md_reader = MarkdownReader(self.settings)
@@ -74,6 +74,7 @@ class IPythonNB(BaseReader):
                 # Unfortunately we can not pass MarkdownReader an in-memory
                 # string, so we have to work with a temporary file
                 with tempfile.NamedTemporaryFile('w+', encoding='utf-8') as metadata_file:
+                    md_reader = MarkdownReader(self.settings)
                     metadata_file.write(metacell)
                     metadata_file.flush()
                     _content, metadata = md_reader.read(metadata_file.name)
