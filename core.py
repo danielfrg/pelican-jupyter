@@ -36,10 +36,10 @@ except ImportError:
 
 from nbconvert.exporters import HTMLExporter
 try:
-    from nbconvert.filters.highlight import _pygment_highlight
+    from nbconvert.filters.highlight import _pygments_highlight
 except ImportError:
     # IPython < 2.0
-    from nbconvert.filters.highlight import _pygments_highlight
+    from nbconvert.filters.highlight import _pygment_highlight as _pygments_highlight
 
 try:
     from nbconvert.nbconvertapp import NbConvertApp
@@ -96,30 +96,42 @@ def get_config():
     return app.config
 
 
-def get_html_from_filepath(filepath, start=0, end=None, preprocessors=[], template=None):
+def get_html_from_filepath(
+    filepath, start=0, end=None, preprocessors=[], template=None,
+    colorscheme=None
+):
     """Return the HTML from a Jupyter Notebook
     """
-    template_file = 'basic'
+    template_file = "basic"
     extra_loaders = []
     if template:
         extra_loaders.append(jinja2.FileSystemLoader([os.path.dirname(template)]))
         template_file = os.path.basename(template)
 
     config = get_config()
-    config.update({'CSSHTMLHeaderTransformer': {
-                        'enabled': True,
-                        'highlight_class': '.highlight-ipynb'},
-                     'SubCell': {
-                        'enabled':True,
-                        'start':start,
-                        'end':end}})
-    exporter = HTMLExporter(config=config,
-                            template_file=template_file,
-                            extra_loaders=extra_loaders,
-                            filters={'highlight2html': custom_highlighter},
-                            preprocessors=[SubCell] + preprocessors)
+    config.update(
+        {
+            "CSSHTMLHeaderTransformer": {
+                "enabled": True,
+                "highlight_class": ".highlight-ipynb",
+            },
+            "SubCell": {"enabled": True, "start": start, "end": end},
+        }
+    )
+
+    if not colorscheme:
+        colorscheme = "default"
 
     config.CSSHTMLHeaderPreprocessor.highlight_class = " .highlight pre "
+    config.CSSHTMLHeaderPreprocessor.style = colorscheme
+    config.LatexPreprocessor.style = colorscheme
+    exporter = HTMLExporter(
+        config=config,
+        template_file=template_file,
+        extra_loaders=extra_loaders,
+        filters={"highlight2html": custom_highlighter},
+        preprocessors=[SubCell] + preprocessors,
+    )
     content, info = exporter.from_filename(filepath)
 
     return content, info
@@ -180,8 +192,9 @@ def custom_highlighter(source, language='python', metadata=None):
     output = output.replace('<pre>', '<pre class="ipynb">')
     return output
 
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 # Create a preprocessor to slice notebook by cells
+
 
 class SliceIndex(Integer):
     """An integer trait that accepts None"""
