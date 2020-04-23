@@ -56,7 +56,7 @@ class IPythonNB(BaseReader):
         filename = os.path.basename(filepath)
         metadata_filename = os.path.splitext(filename)[0] + '.nbdata'
         metadata_filepath = os.path.join(filedir, metadata_filename)
-        
+
         if os.path.exists(metadata_filepath):
             # When metadata is in an external file, process the MD file using Pelican MD Reader
             md_reader = MarkdownReader(self.settings)
@@ -105,11 +105,10 @@ class IPythonNB(BaseReader):
 
         preprocessors = self.settings.get('IPYNB_PREPROCESSORS', [])
         template = self.settings.get('IPYNB_EXPORT_TEMPLATE', None)
-        content, info = get_html_from_filepath(filepath,
-                                               start=start, end=end,
-                                               preprocessors=preprocessors,
-                                               template=template,
-                                            )
+        content, info = get_html_from_filepath(
+            filepath, start=start, end=end, preprocessors=preprocessors,
+            template=template, colorscheme=self.settings.get('IPYNB_COLORSCHEME'),
+        )
 
         # Generate summary: Do it before cleaning CSS
         use_meta_summary = self.settings.get('IPYNB_GENERATE_SUMMARY', True)
