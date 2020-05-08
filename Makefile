@@ -78,7 +78,7 @@ upload-test:  ## Upload package to test PyPI
 
 .PHONY: test
 test:  ## Run tests
-	pytest -s -vv --pyargs pelican_jupyter -k $(TEST_FILTER)
+	pytest -k $(TEST_FILTER)
 
 # ------------------------------------------------------------------------------
 # Project specific

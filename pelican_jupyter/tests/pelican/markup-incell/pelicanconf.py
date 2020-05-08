@@ -1,5 +1,5 @@
 SITEURL = ""
-SITENAME = u"pelican-jupyter-test"
+SITENAME = "pelican-jupyter-test"
 PATH = "content"
 LOAD_CONTENT_CACHE = False
 TIMEZONE = "UTC"
