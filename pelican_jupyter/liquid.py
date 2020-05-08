@@ -5,6 +5,7 @@ from .core import get_html_from_filepath, parse_css
 from .liquid_tags_src import register  # noqa
 from .liquid_tags_src.mdx_liquid_tags import LiquidTags
 
+
 SYNTAX = "{% notebook ~/absolute/path/to/notebook.ipynb [cells[start:end]] %}"
 FORMAT = re.compile(
     r"""

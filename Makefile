@@ -56,14 +56,14 @@ package:  ## Build Python package (sdist)
 .PHONY: check
 check:  ## Check linting
 	@flake8
-	@isort --check-only --diff --recursive --project pelican_jupyter --section-default THIRDPARTY pelican_jupyter .
-	@black --check pelican_jupyter .
+	@isort --check-only --diff --recursive --project pelican_jupyter --section-default THIRDPARTY .
+	@black --check .
 
 
 .PHONY: fmt
 fmt:  ## Format source
-	@isort --recursive --project pelican_jupyter --section-default THIRDPARTY pelican_jupyter .
-	@black pelican_jupyter .
+	@isort --recursive --project pelican_jupyter --section-default THIRDPARTY .
+	@black .
 
 
 .PHONY: upload-pypi
