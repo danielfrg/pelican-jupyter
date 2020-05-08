@@ -14,7 +14,7 @@ make build
 make upload-test
 
 # Create venv and install rc version
-pip install --extra-index-url=https://test.pypi.org/simple 'pelican_jupyter[test]'==${VERSION}rc0
+pip install --extra-index-url=https://test.pypi.org/simple 'pelican-jupyter[test]'==${VERSION}rc0
 pytest --pyargs pelican_jupyter
 
 # Delete rc tag
