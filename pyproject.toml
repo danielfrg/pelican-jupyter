@@ -1,13 +1,15 @@
 [build-system]
-# Minimum requirements for the build system to execute.
-requires = [
-    "setuptools",
-    "setuptools_scm",
-    "wheel"
-]
+requires = ["setuptools", "setuptools_scm", "wheel"]
 
 [tool.setuptools_scm]
 write_to = "pelican_jupyter/_generated_version.py"
+
+[tool.coverage.run]
+parallel = true
+branch = true
+
+[tool.coverage.report]
+show_missing = true
 
 [tool.black]
 target-version = ["py36", "py37", "py38"]
@@ -28,5 +30,16 @@ exclude = '''
 )
 '''
 
-[tool.coverage.report]
-omit = ["pelican_jupyter/tests/*"]
+[tool.isort]
+# https://black.readthedocs.io/en/stable/the_black_code_style.html#how-black-wraps-lines
+atomic=true
+lines_between_types = 1
+lines_after_imports = 2
+multi_line_output = 3
+include_trailing_comma = 1
+force_grid_wrap = 0
+use_parentheses = 1
+line_length = 88
+not_skip = "__init__.py"
+
+known_first_party="jupyter_pelican"

@@ -45,7 +45,7 @@ develop:  ## Install package for development
 
 
 .PHONY: build
-build: package  ## Build everything
+build: cleanall package  ## Build everything
 
 
 .PHONY: package
@@ -73,7 +73,7 @@ upload-pypi:  ## Upload package to PyPI
 
 .PHONY: upload-test
 upload-test:  ## Upload package to test PyPI
-	twine upload --repository testpypi dist/*.tar.gz
+	twine upload --repository test dist/*.tar.gz
 
 
 .PHONY: test
