@@ -1,54 +1,35 @@
-# Pelican plugin for Jupyter/IPython Notebooks
+# pelican-jupyter: Pelican plugin for Jupyter Notebooks
 
-This plugin provides two modes to use Jupyter/IPython notebooks in [Pelican](https://getpelican.com):
+[![PyPI](https://badge.fury.io/py/pelican-jupyter.svg)](https://pypi.org/project/pelican-jupyter/)
+[![Testing](https://github.com/danielfrg/pelican-jupyter/workflows/test/badge.svg)](https://github.com/danielfrg/pelican-jupyter/actions)
+[![License](http://img.shields.io/:license-Apache%202-blue.svg)](https://github.com/danielfrg/pelican-jupyter/blob/master/LICENSE.txt)
+
+## Installation
+
+```
+pip install pelican-jupyter
+```
+
+### Pelican and Jupyter versions
+
+The main focus is to run with the latest versions of the packages but there is a good chance the plugin will work correctly with older versions of Pelican and Jupyter/.
+The recommended version of libraries are:
+
+- `pelican>=4`
+- `notebook>=6`
+- `nbconvert>=5`
+
+## Usage
+
+This plugin provides two modes to use Jupyter notebooks in [Pelican](https://getpelican.com):
 
 1. As a new markup language so `.ipynb` files are recognized as a valid filetype for an article
 2. As a liquid tag based on the [liquid tags plugin](https://github.com/getpelican/pelican-plugins/tree/master/liquid_tags) so notebooks can be
 included in a regular post using Markdown (`.md`) files.
 
-## Requirements
+### Mode A: Markup Mode
 
-Python 2.7 and 3.4 are supported.
-
-The main objective is to run with the latest version of Jupyter/IPython
-but there is a good chance the plugin will work correctly with older versions of Pelican and Jupyter/IPython.
-The recommended version of libraries are:
-
-- `pelican>=3.5`
-- `jupyter>=1.0`
-- `ipython>=4.0`
-- `nbconvert>=4.0`
-- `markdown>=2.6.1`
-
-## Installation
-
-Download this repo and put all the `.py` files it into an `ipynb` directory
-in your `plugins` directory. The structure should look like this:
-
-```
-content
-plugins
-  ipynb
-    __init__.py
-    core.py
-    ipynb.py
-    liquid.py
-    markup.py
-    ... other files are optional ...
-```
-
-If you manage your site with git (github pages for example),
-you can also define it as a submodule:
-
-```
-git submodule add git://github.com/danielfrg/pelican-ipynb.git plugins/ipynb
-```
-
-See below for additional settings in your `pelicanconf.py`, depending on the mode you are using.
-
-## Mode A: Markup Mode
-
-Setup usage of the `markup` plugin in `pelicanconf.py`:
+On your `pelicanconf.py`:
 
 ```python
 MARKUP = ('md', 'ipynb')
@@ -56,18 +37,18 @@ MARKUP = ('md', 'ipynb')
 PLUGIN_PATHS = ['./plugins']
 PLUGINS = ['ipynb.markup']
 
-# if you create jupyter files in the content dir, snapshots are saved with the same
-# metadata. These need to be ignored. 
 IGNORE_FILES = [".ipynb_checkpoints"]  
 ```
 
-### Option 1: Separate MD metadata file
+With this mode you need to pass the MD metadata to the plugins with one of this two options:
+
+#### Option 1: `.nbdata` metadata file
 
 Place the `.ipynb` file in the content folder and create a new file with the
 same name as the ipython notebook with extension `.nbdata`.
-For example if you have `my_post.ipynb` create a `my_post.nbdata`.
+For example if you have `my_post.ipynb` create `my_post.nbdata`.
 
-The `.nbdata` should contain the metadata like a regular Markdown based article:
+The `.nbdata` should contain the metadata like a regular Markdown based article (note the empty line at the end, you need it):
 
 ```
 Title:
@@ -80,12 +61,10 @@ Summary:
 
 ```
 
-Note the empty line at the end, you need that.
-
-You can also specify to only include a subset of notebook cells with the
+You can specify to only include a subset of notebook cells with the
 `Subcells` metadata item.
 It should contain the index (starting at 0) of first and last cell to include
-(use `None` for "unlimited").
+(use `None` for open range).
 For example, to skip the first two cells:
 
 ```
@@ -95,9 +74,7 @@ Subcells: [2, None]
 ### Option 2: Metadata cell in notebook
 
 With this option, the metadata is extracted from the first cell of
-the notebook (which should be a Markdown cell), this cell is then ignored on the rendering of the notebook.
-This avoid the burden of maintaining a separate file or manually editing the
-json in the `.ipynb` file like the previous options.
+the notebook (which should be a Markdown cell), this cell is then ignored when the notebook is rendered.
 
 First, enable the "metacell" mode globally in your config
 
@@ -113,40 +90,6 @@ Now, you can put the metadata in the first notebook cell in Markdown mode, like 
 - date: 2018-05-11
 - category: pyhton
 - tags: pip
-```
-
-### Option 3: metadata field in notebook
-
-Open the `.ipynb` file in a text editor or using the Jupyter Notebook editor under "File"
-and look for the `metadata` tag should see.
-
-```
-{
-    "metadata": {
-        "name": "My notebook",
-        "kernelspec": ...
-        "version": ...
-        ... { A_LOT_OF_OTHER_STUFF } ...
-    },
-{ A_LOT_OF_OTHER_STUFF }
-```
-
-Edit this the `metadata` tag to have the required markdown fields:
-
-```
-{
- "metadata": {
-        "name": "My notebook",
-        "Title": "Notebook using internal metadata",
-        "Date": "2100-12-31",
-        "Category": "Category",
-        "Tags": "tag1,tag2",
-        "slug": "with-metadata",
-        "Author": "Me"
-
-        ... { A_LOT_OF_OTHER_STUFF } ...
-    },
-    { A_LOT_OF_OTHER_STUFF }
 ```
 
 ## Mode B: Liquid tags
@@ -186,20 +129,18 @@ the metadata file and keeps the notebook clean.
 The Liquid tag mode provide more flexibility to combine an existing notebook code or output with extra text on a Markdown.
 You can also combine 2 or more notebooks in this mode.
 The only problem with the liquid tag mode is that it doesn't generate a summary for the article
-automatically from the notebook so you have to write it in the `.md` file that includes
-the notebook liquid tag.
+automatically from the notebook so you have to write it in the source `.md` file that includes the notebook.s
 
 You can use both modes at the same time but you are probably going to see a exception that
 prevents conflicts, ignore it.
 
 ## Note on CSS
 
-If the notebooks look bad on your pelican theme this can help. There is some issues/conflicts regarding the CSS that the Jupyter Notebook requires and the pelican theme.
+If the notebooks look bad on your pelican theme this can help.
+
+There is some issues/conflicts regarding the CSS that the Jupyter Notebook requires and the pelican themes.
 
 I do my best to make the plugin work with every theme but for obvious reasons I cannot guarantee that it will look good in any pelican theme.
-
-I only try this plugin on the pelican theme for [my blog](https://github.com/danielfrg/danielfrg.com)
-while trying to make it the most general and useful out of the box as possible, a difficult compromise sometimes.
 
 Jupyter Notebook is based on bootstrap so you probably will need your theme to be based on that it if you want the html and css to render nicely.
 
