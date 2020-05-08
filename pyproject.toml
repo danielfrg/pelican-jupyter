@@ -9,7 +9,7 @@ parallel = true
 branch = true
 
 [tool.coverage.report]
-show_missing = true
+omit = ["pelican_jupyter/vendor/*", "pelican_jupyter/tests/*"]
 
 [tool.black]
 target-version = ["py36", "py37", "py38"]

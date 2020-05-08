@@ -108,12 +108,7 @@ class IPythonNB(BaseReader):
         use_meta_summary = self.settings.get("IPYNB_GENERATE_SUMMARY", True)
         if "summary" not in keys and use_meta_summary:
             parser = MyHTMLParser(self.settings, filename)
-            if isinstance(content, str):
-                # unicode_literals makes format() try to decode as ASCII. Enforce decoding as UTF-8.
-                content = "<body>{0}</body>".format(content.decode("utf-8"))
-            else:
-                # Content already decoded
-                content = "<body>{0}</body>".format(content)
+            content = "<body>{0}</body>".format(content)
             parser.feed(content)
             parser.close()
             # content = parser.body

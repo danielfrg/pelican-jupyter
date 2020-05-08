@@ -2,8 +2,8 @@ import os
 import re
 
 from .core import get_html_from_filepath, parse_css
-from .liquid_tags_src import register  # noqa
-from .liquid_tags_src.mdx_liquid_tags import LiquidTags
+from .vendor.liquid_tags import register  # noqa
+from .vendor.liquid_tags.mdx_liquid_tags import LiquidTags
 
 
 SYNTAX = "{% notebook ~/absolute/path/to/notebook.ipynb [cells[start:end]] %}"
