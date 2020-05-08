@@ -7,9 +7,9 @@ import pytest
 @pytest.mark.parametrize(
     "filename,expected_fname",
     [
-        # ("pelicanconf_liquid.py", "with-liquid-tag.html"),
+        ("pelicanconf_liquid.py", "with-liquid-tag.html"),
         ("pelicanconf_markup_incell.py", "md-info-in-cell.html"),
-        # ("pelicanconf_markup_nbdata.py", "nbdata-file.html"),
+        ("pelicanconf_markup_nbdata.py", "nbdata-file.html"),
     ],
 )
 def test_can_render_notebook(filename, expected_fname):
