@@ -1,0 +1,5 @@
+[run]
+omit =
+    pelican_jupyter/tests/*
+source =
+    pelican_jupyter
