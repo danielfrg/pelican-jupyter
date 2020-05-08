@@ -5,11 +5,11 @@ import re
 import tempfile
 from shutil import copyfile
 
-import six
 from pelican import signals
 from pelican.readers import BaseReader, HTMLReader, MarkdownReader
 
 from .core import get_html_from_filepath, parse_css
+
 
 try:
     # Py3k
@@ -108,12 +108,7 @@ class IPythonNB(BaseReader):
         use_meta_summary = self.settings.get("IPYNB_GENERATE_SUMMARY", True)
         if "summary" not in keys and use_meta_summary:
             parser = MyHTMLParser(self.settings, filename)
-            if isinstance(content, six.binary_type):
-                # unicode_literals makes format() try to decode as ASCII. Enforce decoding as UTF-8.
-                content = "<body>{0}</body>".format(content.decode("utf-8"))
-            else:
-                # Content already decoded
-                content = "<body>{0}</body>".format(content)
+            content = "<body>{0}</body>".format(content)
             parser.feed(content)
             parser.close()
             # content = parser.body

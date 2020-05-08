@@ -15,6 +15,7 @@ import warnings
 
 import markdown
 
+
 # Define some regular expressions
 LIQUID_TAG = re.compile(r"\{%.*?%\}", re.MULTILINE | re.DOTALL)
 EXTRACT_TAG = re.compile(r"(?:\s*)(\S+)(?:\s*)")

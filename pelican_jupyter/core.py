@@ -9,6 +9,7 @@ import jinja2
 from nbconvert.exporters import HTMLExporter
 from pygments.formatters import HtmlFormatter
 
+
 try:
     # Jupyter
     from traitlets import Integer

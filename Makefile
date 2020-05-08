@@ -18,7 +18,7 @@ clean:  ## Clean build files
 	@find . -type f -name '*.py[co]' -delete
 	@find . -type d -name __pycache__ -exec rm -rf {} +
 	@find . -type d -name .ipynb_checkpoints -exec rm -rf {} +
-	@rm -rf pelican_jupyter/tests/pelican/output
+	@find . -type d -name output -exec rm -rf {} +
 
 
 .PHONY: cleanall
@@ -45,7 +45,7 @@ develop:  ## Install package for development
 
 
 .PHONY: build
-build: package  ## Build everything
+build: cleanall package  ## Build everything
 
 
 .PHONY: package
@@ -56,14 +56,14 @@ package:  ## Build Python package (sdist)
 .PHONY: check
 check:  ## Check linting
 	@flake8
-	@isort --check-only --diff --recursive --project pelican_jupyter --section-default THIRDPARTY pelican_jupyter .
-	@black --check pelican_jupyter .
+	@isort --check-only --diff --recursive --project pelican_jupyter --section-default THIRDPARTY .
+	@black --check .
 
 
 .PHONY: fmt
 fmt:  ## Format source
-	@isort --recursive --project pelican_jupyter --section-default THIRDPARTY pelican_jupyter .
-	@black pelican_jupyter .
+	@isort --recursive --project pelican_jupyter --section-default THIRDPARTY .
+	@black .
 
 
 .PHONY: upload-pypi
@@ -73,27 +73,12 @@ upload-pypi:  ## Upload package to PyPI
 
 .PHONY: upload-test
 upload-test:  ## Upload package to test PyPI
-	twine upload --repository testpypi dist/*.tar.gz
+	twine upload --repository test dist/*.tar.gz
 
 
 .PHONY: test
 test:  ## Run tests
-	pytest -s -vv pelican_jupyter/tests -k $(TEST_FILTER)
-
-
-.PHONY: docs
-docs:  ## Build mkdocs
-	mkdocs build --config-file $(CURDIR)/mkdocs.yml
-
-
-.PHONY: serve-docs
-serve-docs:  ## Serve docs
-	mkdocs serve
-
-
-.PHONY: netlify
-netlify:  ## Build docs on Netlify
-	$(MAKE) docs
+	pytest -k $(TEST_FILTER)
 
 # ------------------------------------------------------------------------------
 # Project specific

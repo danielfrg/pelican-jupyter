@@ -1,5 +1,5 @@
 SITEURL = ""
-SITENAME = u"pelican-jupyter-test"
+SITENAME = "pelican-jupyter-test"
 PATH = "content"
 LOAD_CONTENT_CACHE = False
 TIMEZONE = "UTC"
@@ -10,6 +10,7 @@ THEME = "notmyidea"
 MARKUP = "md"
 
 from pelican_jupyter import liquid as nb_liquid  # noqa
+
 
 PLUGINS = [nb_liquid]
 
