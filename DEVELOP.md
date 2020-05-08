@@ -5,7 +5,7 @@ Create dev environment
 ```
 # Create conda env
 make env
-conda activate {{ coockiecutter.project_name }}
+conda activate pelican-jupyter
 make develop
 ```
 

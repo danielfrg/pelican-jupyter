@@ -32,12 +32,12 @@ included in a regular post using Markdown (`.md`) files.
 On your `pelicanconf.py`:
 
 ```python
-MARKUP = ('md', 'ipynb')
+MARKUP = ("md", "ipynb")
 
-PLUGIN_PATHS = ['./plugins']
-PLUGINS = ['ipynb.markup']
+from pelican_jupyter import markup as nb_markup
+PLUGINS = [nb_markup]
 
-IGNORE_FILES = [".ipynb_checkpoints"]  
+IGNORE_FILES = [".ipynb_checkpoints"]
 ```
 
 With this mode you need to pass the MD metadata to the plugins with one of this two options:
@@ -76,10 +76,16 @@ Subcells: [2, None]
 With this option, the metadata is extracted from the first cell of
 the notebook (which should be a Markdown cell), this cell is then ignored when the notebook is rendered.
 
-First, enable the "metacell" mode globally in your config
+On your `pelicanconf.py`:
 
 ```python
-IPYNB_USE_METACELL = True
+MARKUP = ("md", "ipynb")
+
+from pelican_jupyter import markup as nb_markup
+PLUGINS = [nb_markup]
+IPYNB_MARKUP_USE_FIRST_CELL = True
+
+IGNORE_FILES = [".ipynb_checkpoints"]
 ```
 
 Now, you can put the metadata in the first notebook cell in Markdown mode, like this:
@@ -94,16 +100,15 @@ Now, you can put the metadata in the first notebook cell in Markdown mode, like 
 
 ## Mode B: Liquid tags
 
-**Requires** to install the pelican [liquid_tags plugin](https://github.com/getpelican/pelican-plugins/tree/master/liquid_tags).
-Only the base `liquid_tags.py` and `mdx_liquid_tags.py` files are required.
-
-In the `pelicanconf.py`:
+On your `pelicanconf.py`:
 
 ```python
 MARKUP = ('md', )
 
-PLUGIN_PATHS = ['./plugins']
-PLUGINS = ['ipynb.liquid']
+from pelican_jupyter import liquid as nb_liquid
+PLUGINS = [nb_liquid]
+
+IGNORE_FILES = [".ipynb_checkpoints"]
 ```
 
 After this you can use a liquid tag to include a notebook in any regular markdown article,

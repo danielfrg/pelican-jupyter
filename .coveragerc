@@ -3,3 +3,7 @@ omit =
     pelican_jupyter/tests/*
 source =
     pelican_jupyter
+
+[report]
+omit =
+    pelican_jupyter/tests/*

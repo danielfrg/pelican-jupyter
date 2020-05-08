@@ -12,6 +12,6 @@ MARKUP = ("md", "ipynb")
 from pelican_jupyter import markup as nb_markup  # noqa
 
 PLUGINS = [nb_markup]
-IPYNB_USE_METACELL = True
+IPYNB_MARKUP_USE_FIRST_CELL = True
 
 IGNORE_FILES = [".ipynb_checkpoints"]

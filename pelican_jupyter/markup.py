@@ -59,53 +59,35 @@ class IPythonNB(BaseReader):
         metadata_filepath = os.path.join(filedir, metadata_filename)
 
         if os.path.exists(metadata_filepath):
-            # When metadata is in an external file, process the MD file using Pelican MD Reader
+            # Found and .nbdata file
+            # Process it using Pelican MD Reader
             md_reader = MarkdownReader(self.settings)
             _content, metadata = md_reader.read(metadata_filepath)
-        else:
-            # No external .md file: Load metadata from ipython notebook file
+        elif self.settings.get("IPYNB_MARKUP_USE_FIRST_CELL"):
+            # No external .md file:
+            # Load metadata from the first cell of the notebook file
             with open(filepath) as ipynb_file:
-                doc = json.load(ipynb_file)
-            if self.settings.get("IPYNB_USE_METACELL"):
-                # Option 2: Use metadata on the first notebook cell
-                metacell = "\n".join(doc["cells"][0]["source"])
-                # Convert Markdown title and listings to standard metadata items
-                metacell = re.sub(r"^#+\s+", "title: ", metacell, flags=re.MULTILINE)
-                metacell = re.sub(r"^\s*[*+-]\s+", "", metacell, flags=re.MULTILINE)
-                # Unfortunately we can not pass MarkdownReader an in-memory
-                # string, so we have to work with a temporary file
-                with tempfile.NamedTemporaryFile(
-                    "w+", encoding="utf-8"
-                ) as metadata_file:
-                    md_reader = MarkdownReader(self.settings)
-                    metadata_file.write(metacell)
-                    metadata_file.flush()
-                    _content, metadata = md_reader.read(metadata_file.name)
-                # Skip metacell
-                start = 1
-            else:
-                # Option 3: Read metadata from inside the notebook
-                notebook_metadata = doc["metadata"]
-                # Change to standard pelican metadata
-                for key, value in notebook_metadata.items():
-                    key = key.lower()
-                    if key in ("title", "date", "category", "tags", "slug", "author"):
-                        metadata[key] = self.process_metadata(key, value)
+                nb_json = json.load(ipynb_file)
 
-        keys = [k.lower() for k in metadata.keys()]
-        if not set(["title", "date"]).issubset(set(keys)):
-            # Probably using ipynb.liquid mode
-            md_filename = filename.split(".")[0] + ".md"
-            md_filepath = os.path.join(filedir, md_filename)
-            if not os.path.exists(md_filepath):
-                raise Exception(
-                    "Could not find metadata in `.nbdata` file or inside `.ipynb`"
-                )
-            else:
-                raise Exception(
-                    "Could not find metadata in `.nbdata` file or inside `.ipynb` but found `.md` file, "
-                    "assuming that this notebook is for liquid tag usage if true ignore this error"
-                )
+            metacell = "\n".join(nb_json["cells"][0]["source"])
+            # Convert Markdown title and listings to standard metadata items
+            metacell = re.sub(r"^#+\s+", "title: ", metacell, flags=re.MULTILINE)
+            metacell = re.sub(r"^\s*[*+-]\s+", "", metacell, flags=re.MULTILINE)
+            # Unfortunately we can not pass MarkdownReader an in-memory
+            # string, so we have to work with a temporary file
+            with tempfile.NamedTemporaryFile(
+                "w+", encoding="utf-8"
+            ) as metadata_file:
+                md_reader = MarkdownReader(self.settings)
+                metadata_file.write(metacell)
+                metadata_file.flush()
+                _content, metadata = md_reader.read(metadata_file.name)
+            # Skip metacell
+            start = 1
+        else:
+            raise Exception("Error processing f{filepath}: "
+            "Could not find metadata in: .nbdata file or in the first cell of the notebook."
+            "If this notebook is used with liquid tags then you can safely ignore this error.")
 
         if "subcells" in metadata:
             start, end = ast.literal_eval(metadata["subcells"])
@@ -122,6 +104,7 @@ class IPythonNB(BaseReader):
         )
 
         # Generate summary: Do it before cleaning CSS
+        keys = [k.lower() for k in metadata.keys()]
         use_meta_summary = self.settings.get("IPYNB_GENERATE_SUMMARY", True)
         if "summary" not in keys and use_meta_summary:
             parser = MyHTMLParser(self.settings, filename)
