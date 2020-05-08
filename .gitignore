@@ -110,4 +110,4 @@ dmypy.json
 _generated_version.py
 
 ### Project specific ###
-pelican_jupyter/tests/pelican/output
+output

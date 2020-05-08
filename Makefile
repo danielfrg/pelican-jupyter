@@ -18,7 +18,7 @@ clean:  ## Clean build files
 	@find . -type f -name '*.py[co]' -delete
 	@find . -type d -name __pycache__ -exec rm -rf {} +
 	@find . -type d -name .ipynb_checkpoints -exec rm -rf {} +
-	@rm -rf pelican_jupyter/tests/pelican/output
+	@find . -type d -name output -exec rm -rf {} +
 
 
 .PHONY: cleanall
@@ -79,21 +79,6 @@ upload-test:  ## Upload package to test PyPI
 .PHONY: test
 test:  ## Run tests
 	pytest -s -vv --pyargs pelican_jupyter -k $(TEST_FILTER)
-
-
-.PHONY: docs
-docs:  ## Build mkdocs
-	mkdocs build --config-file $(CURDIR)/mkdocs.yml
-
-
-.PHONY: serve-docs
-serve-docs:  ## Serve docs
-	mkdocs serve
-
-
-.PHONY: netlify
-netlify:  ## Build docs on Netlify
-	$(MAKE) docs
 
 # ------------------------------------------------------------------------------
 # Project specific

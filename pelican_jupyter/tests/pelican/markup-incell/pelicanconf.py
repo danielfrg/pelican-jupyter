@@ -1,6 +1,6 @@
 SITEURL = ""
 SITENAME = u"pelican-jupyter-test"
-PATH = "content-markup-incell"
+PATH = "content"
 LOAD_CONTENT_CACHE = False
 TIMEZONE = "UTC"
 DEFAULT_LANG = "en"
