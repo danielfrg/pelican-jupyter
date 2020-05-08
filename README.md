@@ -1,7 +1,7 @@
 # pelican-jupyter: Pelican plugin for Jupyter Notebooks
 
 [![PyPI](https://badge.fury.io/py/pelican-jupyter.svg)](https://pypi.org/project/pelican-jupyter/)
-[![Testing](https://github.com/danielfrg/pelican-jupyter/workflows/main/badge.svg)](https://github.com/danielfrg/pelican-jupyter/actions)
+[![Testing](https://github.com/danielfrg/pelican-jupyter/workflows/test/badge.svg)](https://github.com/danielfrg/pelican-jupyter/actions)
 [![Coverage Status](https://codecov.io/gh/danielfrg/pelican-jupyter/branch/master/graph/badge.svg)](https://codecov.io/gh/danielfrg/pelican-jupyter?branch=master)
 [![License](http://img.shields.io/:license-Apache%202-blue.svg)](https://github.com/danielfrg/pelican-jupyter/blob/master/LICENSE.txt)
 
