@@ -1,1 +1,1 @@
-from .liquid_tags import *
+from .liquid_tags import *  # noqa

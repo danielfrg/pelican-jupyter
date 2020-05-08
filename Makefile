@@ -55,7 +55,7 @@ package:  ## Build Python package (sdist)
 
 .PHONY: check
 check:  ## Check linting
-	@flake8 pelican_jupyter .
+	@flake8
 	@isort --check-only --diff --recursive --project pelican_jupyter --section-default THIRDPARTY pelican_jupyter .
 	@black --check pelican_jupyter .
 
