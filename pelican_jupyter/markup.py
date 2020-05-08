@@ -75,9 +75,7 @@ class IPythonNB(BaseReader):
             metacell = re.sub(r"^\s*[*+-]\s+", "", metacell, flags=re.MULTILINE)
             # Unfortunately we can not pass MarkdownReader an in-memory
             # string, so we have to work with a temporary file
-            with tempfile.NamedTemporaryFile(
-                "w+", encoding="utf-8"
-            ) as metadata_file:
+            with tempfile.NamedTemporaryFile("w+", encoding="utf-8") as metadata_file:
                 md_reader = MarkdownReader(self.settings)
                 metadata_file.write(metacell)
                 metadata_file.flush()
@@ -85,9 +83,11 @@ class IPythonNB(BaseReader):
             # Skip metacell
             start = 1
         else:
-            raise Exception("Error processing f{filepath}: "
-            "Could not find metadata in: .nbdata file or in the first cell of the notebook."
-            "If this notebook is used with liquid tags then you can safely ignore this error.")
+            raise Exception(
+                "Error processing f{filepath}: "
+                "Could not find metadata in: .nbdata file or in the first cell of the notebook."
+                "If this notebook is used with liquid tags then you can safely ignore this error."
+            )
 
         if "subcells" in metadata:
             start, end = ast.literal_eval(metadata["subcells"])
