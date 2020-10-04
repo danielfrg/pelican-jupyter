@@ -11,7 +11,7 @@ dependencies:
   - pylint
   - flake8
   - black
-  - isort>=4,<5
+  - isort==5.5.4
   - twine
   - wheel
   - pytest
