@@ -6,7 +6,7 @@ setuptools_scm
 pylint
 flake8
 black
-isort
+isort==5.5.4
 twine
 wheel
 pytest
