@@ -1,3 +1,0 @@
-pelican>=4
-nbconvert>=5,<6
-markdown

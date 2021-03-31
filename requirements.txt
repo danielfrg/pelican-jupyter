@@ -1,22 +1,3 @@
-# Used for CI - It should match environment.yml
-
-# Base conda deps
-setuptools
-setuptools_scm
-pylint
-flake8
-black
-isort==5.5.4
-twine
-wheel
-pytest
-pytest-cov
-
-# This project conda deps
-nbconvert
+pelican>=4
+nbconvert>=5,<6
 markdown
-notebook
-jupyterlab
-
-# This project pip deps
-pelican

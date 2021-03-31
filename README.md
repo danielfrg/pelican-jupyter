@@ -1,9 +1,9 @@
 # pelican-jupyter: Pelican plugin for Jupyter Notebooks
 
-[![PyPI](https://badge.fury.io/py/pelican-jupyter.svg)](https://pypi.org/project/pelican-jupyter/)
-[![Testing](https://github.com/danielfrg/pelican-jupyter/workflows/test/badge.svg)](https://github.com/danielfrg/pelican-jupyter/actions)
-[![Coverage Status](https://codecov.io/gh/danielfrg/pelican-jupyter/branch/master/graph/badge.svg)](https://codecov.io/gh/danielfrg/pelican-jupyter?branch=master)
-[![License](https://img.shields.io/:license-Apache%202-blue.svg)](https://github.com/danielfrg/pelican-jupyter/blob/master/LICENSE.txt)
+[![pypi](https://badge.fury.io/py/pelican-jupyter.svg)](https://pypi.org/project/pelican-jupyter/)
+[![build](https://github.com/danielfrg/pelican-jupyter/workflows/test/badge.svg)](https://github.com/danielfrg/pelican-jupyter/actions)
+[![coverage](https://codecov.io/gh/danielfrg/pelican-jupyter/branch/master/graph/badge.svg)](https://codecov.io/gh/danielfrg/pelican-jupyter?branch=master)
+[![license](https://img.shields.io/:license-Apache%202-blue.svg)](https://github.com/danielfrg/pelican-jupyter/blob/master/LICENSE.txt)
 
 ## Installation
 

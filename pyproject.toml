@@ -4,6 +4,11 @@ requires = ["setuptools>=42", "setuptools_scm[toml]>=3.4", "wheel"]
 [tool.setuptools_scm]
 write_to = "pelican_jupyter/_generated_version.py"
 
+[tool.pytest.ini_options]
+norecursedirs = ".git,dist,build,env,venv"
+addopts = "pelican_jupyter/tests -s -vv --cov-config=pyproject.toml --cov=pelican_jupyter --cov-report term-missing"
+markers = []
+
 [tool.coverage.run]
 parallel = true
 branch = true
@@ -12,7 +17,7 @@ branch = true
 omit = ["pelican_jupyter/_generated_version.py", "pelican_jupyter/vendor/*", "pelican_jupyter/tests/*"]
 
 [tool.black]
-target-version = ["py36", "py37", "py38"]
+target-version = ["py37", "py38"]
 exclude = '''
 (
     asv_bench/env
@@ -27,12 +32,13 @@ exclude = '''
   | buck-out
   | build
   | dist
+  | _generated_version.py
 )
 '''
 
 [tool.isort]
 # https://black.readthedocs.io/en/stable/the_black_code_style.html#how-black-wraps-lines
-multi_line_output=3
+multi_line_output = 3
 lines_after_imports = 2
 force_grid_wrap = 0
 include_trailing_comma = "true"

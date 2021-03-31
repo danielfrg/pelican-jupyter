@@ -2,47 +2,53 @@ name: test
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
   schedule:
     - cron: "0 5 * * *"
+  workflow_dispatch:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.7, 3.8, 3.9]
 
     steps:
     - uses: actions/checkout@v2
     - run: git fetch --prune --unshallow
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+    - name: Setup Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install dependencies
+    - name: Print Python versions
+      run: |
+        which python
+        which pip
+        python --version
+        pip --version
+
+    - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip --version
+        pip install -U -r requirements-dev.txt
         pip freeze
+
+    - name: Build package
+      run: |
+        make build
 
     - name: Install package
       run: |
-        make build
-        pip install -e .
+        pip install dist/*.tar.gz
         pip freeze
 
-    - name: Check linting
-      run: |
-        # make check
-
     - name: Run tests
-      if: always()
       run: |
         make test
         make report

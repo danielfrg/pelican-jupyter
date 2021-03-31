@@ -1,15 +1,21 @@
-# Development
+# Contributing
 
-Create dev environment
+## Development environment
+
+Create Python env
 
 ```
-# Create conda env
 make env
 conda activate pelican-jupyter
+```
+
+Install package for developmentt
+
+```
 make develop
 ```
 
-## Testing
+## Tests
 
 ```
 # Check linting and format

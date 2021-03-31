@@ -2,27 +2,30 @@ name: pelican-jupyter
 channels:
   - conda-forge
 dependencies:
-  - python=3.7
+  - python=3.8
   - pip
 
-  # Base conda deps
+  # Dev tools
   - setuptools
-  - setuptools_scm
+  - setuptools-scm
   - pylint
   - flake8
   - black
-  - isort==5.5.4
+  - isort
   - twine
   - wheel
+
+  # Testing
   - pytest
   - pytest-cov
 
-  # This project conda deps
-  - nbconvert
-  - markdown
+  # Examples
   - notebook
   - jupyterlab
 
   - pip:
-      # This project pip deps
-      - pelican
+      # Package deps
+      - pelican>=4
+      - nbconvert>=5,<6
+      - markdown
+
