@@ -2,7 +2,7 @@
 
 ## Upload to test PyPI
 
-```
+```shell
 export VERSION=1.0.0
 git checkout -b release-${VERSION}
 
@@ -28,7 +28,7 @@ Merge branch when CI passes
 - Update `CHANGELOG.md`
 - Update `README.md` and docs as needed
 
-```
+```shell
 export VERSION=1.0.0
 
 git commit -am "Release ${VERSION}" --allow-empty
