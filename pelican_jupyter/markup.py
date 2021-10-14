@@ -74,12 +74,16 @@ class IPythonNB(BaseReader):
             metacell = re.sub(r"^#+\s+", "title: ", metacell, flags=re.MULTILINE)
             metacell = re.sub(r"^\s*[*+-]\s+", "", metacell, flags=re.MULTILINE)
             # Unfortunately we can not pass MarkdownReader an in-memory
-            # string, so we have to work with a temporary file
-            with tempfile.NamedTemporaryFile("w+", encoding="utf-8") as metadata_file:
-                md_reader = MarkdownReader(self.settings)
-                metadata_file.write(metacell)
-                metadata_file.flush()
-                _content, metadata = md_reader.read(metadata_file.name)
+            # string, so we have to work with a temporary file.
+            # On systems such as MS Windows, the file can not be opened a second time.
+            # For this reason, we need to close it before reading, and then delete the file  afterwards.
+            metadata_file = tempfile.NamedTemporaryFile("w+", encoding="utf-8", delete=False)
+            md_reader = MarkdownReader(self.settings)
+            metadata_file.write(metacell)
+            metadata_file.flush()
+            metadata_file.close()
+            _content, metadata = md_reader.read(metadata_file.name)
+            os.remove(metadata_file.name)
             # Skip metacell
             start = 1
         else:
