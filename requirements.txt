@@ -1,3 +1,4 @@
 pelican>=4
 nbconvert>=5,<6
 markdown
+jinja2<3.1
