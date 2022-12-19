@@ -95,7 +95,7 @@ Now, you can put the metadata in the first notebook cell in Markdown mode, like 
 - title: My notebook
 - author: John Doe
 - date: 2018-05-11
-- category: pyhton
+- category: python
 - tags: pip
 ```
 
