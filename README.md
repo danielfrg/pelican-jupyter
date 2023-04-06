@@ -1,5 +1,10 @@
+# This project is not maintained anymore
+
+I have not used this project myself on a long time. I have moved on to [mkdocs](https://www.mkdocs.org/) and my [mkdocs-jupyter](https://github.com/danielfrg/mkdocs-jupyter) plugin and I recommend to do the same.
+
 # pelican-jupyter: Pelican plugin for Jupyter Notebooks
 
+![Not Maintained](https://img.shields.io/badge/Maintenance%20Level-Not%20Maintained-yellow.svg)
 [![pypi](https://badge.fury.io/py/pelican-jupyter.svg)](https://pypi.org/project/pelican-jupyter/)
 [![build](https://github.com/danielfrg/pelican-jupyter/workflows/test/badge.svg)](https://github.com/danielfrg/pelican-jupyter/actions/workflows/test.yml)
 [![coverage](https://codecov.io/gh/danielfrg/pelican-jupyter/branch/master/graph/badge.svg)](https://codecov.io/gh/danielfrg/pelican-jupyter?branch=master)
